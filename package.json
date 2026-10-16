@@ -10,7 +10,7 @@
     "demo:build": "npm run build && npm run build -w dashboard-kit-demo",
     "test:python": "uv run --project demo/server pytest tests/test_backend.py demo/server/tests -q",
     "test:package": "node --test tests/packaging.test.mjs",
-    "check": "npm run typecheck && npm run build && npm test && npm run test:python && npm run test:package && npm run demo:build && npm run demo:pages",
+    "check": "npm run build && npm run typecheck && npm test && npm run test:python && npm run test:package && npm run demo:build && npm run demo:pages",
     "demo:pages": "npm run build && npm run build:pages -w dashboard-kit-demo"
   },
   "devDependencies": {
