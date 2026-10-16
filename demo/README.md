@@ -1,5 +1,7 @@
 # Standalone demo
 
+https://github.com/user-attachments/assets/3e0f855d-4312-4db7-9bf8-e1c7114a3f73
+
 The demo runs a React dashboard with a Python backend and SQLite storage. It includes fictional sales data, five starter charts, and a manual chart editor.
 
 ## Browser demo
