@@ -1,0 +1,236 @@
+/* dash-kit — 04-chrome.css
+   Top-bar controls, theme toggle with its circular wipe, status pill.
+   Load order matters: see dash-kit.css. */
+
+.ldk-surface .topbar .sep {
+  width: 1px;
+  height: 26px;
+  background: var(--line-2)
+}
+
+.ldk-surface .topbar h1 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: .2px
+}
+
+.ldk-surface .topbar .sub {
+  font-size: 11px;
+  color: var(--text-2);
+  font-weight: 500
+}
+
+.ldk-surface .topbar .sp {
+  flex: 1
+}
+
+.ldk-surface .tb-btn {
+  background: transparent;
+  border: 1px solid var(--line-2);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 500
+}
+
+.ldk-surface .tb-btn:hover {
+  border-color: var(--blue)
+}
+
+.ldk-surface .auto-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  min-width: 0
+}
+
+.ldk-surface .auto-ref-lbl {
+  font-size: 11px;
+  color: var(--text-2);
+  font-weight: 500;
+  white-space: nowrap
+}
+
+.ldk-surface .topbar .auto-ref .lb.lb-compact {
+  min-width: 6.75rem
+}
+
+.ldk-surface .topbar .auto-ref .lb-btn {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--line-2)
+}
+
+.ldk-surface .topbar .auto-ref .lb-btn:hover {
+  border-color: var(--blue)
+}
+
+/* Skill-ladder theme toggle (circular wipe + hover glow). */
+.ldk-surface .card-nav-theme {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  color: var(--text-2);
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color .15s ease, border-color .15s ease, transform .1s ease, box-shadow .2s ease;
+  flex: none
+}
+
+.ldk-surface .card-nav-theme:hover {
+  color: var(--text);
+  border-color: var(--line-2)
+}
+
+.ldk-surface .card-nav-theme-icon {
+  display: block;
+  transform-origin: center
+}
+
+.ldk-surface .card-nav-theme:hover .card-nav-theme-icon--sun {
+  animation: card-nav-theme-icon-glow-sun .7s ease
+}
+
+.ldk-surface .card-nav-theme:hover .card-nav-theme-icon--moon {
+  animation: card-nav-theme-icon-glow-moon .7s ease
+}
+
+@keyframes card-nav-theme-icon-glow-sun {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 transparent);
+    transform: scale(1)
+  }
+
+  40% {
+    filter: drop-shadow(0 0 4px color-mix(in srgb, var(--text) 95%, transparent)) drop-shadow(0 0 8px color-mix(in srgb, var(--text) 75%, transparent)) drop-shadow(0 0 12px color-mix(in srgb, var(--text) 45%, transparent));
+    transform: scale(1.12)
+  }
+}
+
+@keyframes card-nav-theme-icon-glow-moon {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 transparent);
+    transform: scale(1)
+  }
+
+  40% {
+    filter: drop-shadow(0 0 4px color-mix(in srgb, var(--text-2) 90%, transparent)) drop-shadow(0 0 8px color-mix(in srgb, var(--text-2) 65%, transparent)) drop-shadow(0 0 12px color-mix(in srgb, var(--text-2) 40%, transparent));
+    transform: scale(1.12)
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .ldk-surface .card-nav-theme:hover .card-nav-theme-icon--sun,
+  .ldk-surface .card-nav-theme:hover .card-nav-theme-icon--moon {
+    animation: none
+  }
+}
+
+.ldk-surface .card-nav-theme:active {
+  transform: scale(.94)
+}
+
+.ldk-surface .card-nav-theme:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px
+}
+
+/* Circular theme wipe: must paint above sticky header, menus, tips */
+.ldk-surface ::view-transition {
+  z-index: var(--layer-theme-wipe)
+}
+
+.ldk-surface html.theme-vt-circle::view-transition {
+  z-index: var(--layer-theme-wipe)
+}
+
+.ldk-surface html.theme-vt-circle::view-transition-old(root),
+.ldk-surface html.theme-vt-circle::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal
+}
+
+.ldk-surface html.theme-vt-circle::view-transition-old(root) {
+  z-index: 1
+}
+
+.ldk-surface html.theme-vt-circle::view-transition-new(root) {
+  z-index: var(--layer-theme-wipe)
+}
+
+.ldk-surface html.theme-vt-circle::view-transition-group(root) {
+  animation-duration: 1.4s;
+  z-index: var(--layer-theme-wipe)
+}
+
+/* Do NOT flatten live DOM z-index during the wipe. Matching skill-ladder:
+   only the ::view-transition layer is elevated. Flattening sticky chrome
+   and cards to the same z made later DOM (charts) paint over the topbar
+   inside both VT root snapshots — the "charts over header" flash. */
+
+/* Avoid hover lift creating extra stacking mid-wipe */
+.ldk-surface html.theme-vt-circle .card.magic-card:hover {
+  transform: none;
+  box-shadow: var(--shadow)
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .ldk-surface html.theme-vt-circle::view-transition-old(root),
+  .ldk-surface html.theme-vt-circle::view-transition-new(root) {
+    animation: none !important
+  }
+}
+
+.ldk-surface .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--panel-2);
+  color: var(--text-2)
+}
+
+.ldk-surface .pill .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted)
+}
+
+.ldk-surface .pill.live .dot {
+  background: #14D64D;
+  box-shadow: 0 0 0 3px rgba(20, 214, 77, .2)
+}
+
+.ldk-surface .pill.err .dot {
+  background: #FF4B32
+}
+
+.ldk-surface .pill.load .dot {
+  background: #FBD709;
+  animation: pulse 1s infinite alternate
+}
+
+@keyframes pulse {
+  to {
+    opacity: .3
+  }
+}

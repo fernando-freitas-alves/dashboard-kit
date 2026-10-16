@@ -1,0 +1,59 @@
+/* dash-kit — 02-topbar.css
+   Sticky top bar: band, gradient underline, reduced-motion fallback.
+   Load order matters: see dash-kit.css. */
+
+.ldk-surface .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 56px;
+  padding: 0 18px;
+  background: var(--bg);
+  color: var(--text);
+  border-bottom: 0;
+  /* Let the logo cursor-glow bloom past the bar edge (skill-ladder) */
+  overflow: visible;
+  /* Stay in the root snapshot so the circular theme wipe covers the header */
+  view-transition-name: none
+}
+
+/* Brand gradient underline — drifts horizontally, very slowly */
+.ldk-surface .topbar::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(90deg,
+      #00D6D6 0%,
+      #84F11E 25%,
+      #00C2C2 50%,
+      #14D64D 75%,
+      #00D6D6 100%);
+  background-size: 300% 100%;
+  animation: topbar-grad-drift 12s linear infinite
+}
+
+@keyframes topbar-grad-drift {
+  from {
+    background-position: 0% 50%
+  }
+
+  to {
+    background-position: 100% 50%
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ldk-surface .topbar::after {
+    animation: none;
+    background: var(--grad);
+    background-size: auto
+  }
+}

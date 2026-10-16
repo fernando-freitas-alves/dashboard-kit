@@ -1,0 +1,340 @@
+/* dash-kit — 10-overlays.css
+   Query inspector dialog, pager, source status, banners, reveal panels.
+   Load order matters: see dash-kit.css. */
+
+.ldk-surface .qbtn {
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--ctrl-h);
+  height: var(--ctrl-h);
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: var(--panel);
+  color: var(--muted);
+  padding: 0;
+  margin: 0;
+  align-self: center
+}
+
+.ldk-surface .qbtn:hover,
+.ldk-surface .qbtn:focus-visible {
+  color: var(--text);
+  border-color: var(--blue);
+  outline: none
+}
+
+.ldk-surface .qbtn svg {
+  width: 14px;
+  height: 14px;
+  display: block
+}
+
+/* Tip text comes from #ldk-tip (top layer) — no local ::after that can bury chart tips */
+
+.ldk-surface dialog.qdlg {
+  width: min(960px, 94vw);
+  max-height: 88vh;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  padding: 0;
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, .35);
+  opacity: 0;
+  transform: translateY(12px) scale(.985);
+  transition: opacity .22s ease, transform .22s ease
+}
+
+.ldk-surface dialog.qdlg.in {
+  opacity: 1;
+  transform: none
+}
+
+/* Match Claude MCP “sources” overlay: frosted dim, and lock page scroll */
+.ldk-surface html:has(dialog.qdlg[open]),
+.ldk-surface body:has(dialog.qdlg[open]) {
+  overflow: hidden
+}
+
+.ldk-surface dialog.qdlg::backdrop {
+  background: rgba(22, 28, 33, .55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  opacity: 0;
+  transition: opacity .22s ease
+}
+
+.ldk-surface dialog.qdlg.in::backdrop {
+  opacity: 1
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .ldk-surface dialog.qdlg,
+  .ldk-surface dialog.qdlg::backdrop {
+    transition: none
+  }
+}
+
+.ldk-surface .qd-h {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  background: var(--panel);
+  z-index: 1
+}
+
+.ldk-surface .qd-h h3 {
+  margin: 0;
+  font-size: 15px;
+  flex: 1
+}
+
+.ldk-surface .qd-b {
+  padding: 14px 18px 18px;
+  overflow: auto;
+  max-height: calc(88vh - 60px)
+}
+
+.ldk-surface .qd-logic {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-2);
+  background: var(--panel-2);
+  border-left: 3px solid var(--blue);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 14px
+}
+
+.ldk-surface .qd-src {
+  margin-bottom: 16px
+}
+
+.ldk-surface .qd-src-h {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 12px
+}
+
+.ldk-surface .qd-src-h b {
+  font-size: 13px
+}
+
+.ldk-surface .qd-src-h .meta {
+  color: var(--faint);
+  flex: 1
+}
+
+.ldk-surface .qd-src pre {
+  margin: 0;
+  font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+  overflow: auto;
+  max-height: 46vh;
+  white-space: pre;
+  color: var(--text)
+}
+
+.ldk-surface .qd-src pre .kw {
+  color: #00629F;
+  font-weight: 600
+}
+
+.ldk-surface .qd-src pre .str {
+  color: #037C5E
+}
+
+.ldk-surface .qd-src pre .cm {
+  color: var(--faint);
+  font-style: italic
+}
+
+.ldk-surface .qd-src pre .num {
+  color: #C2417A
+}
+
+[data-theme="dark"] .ldk-surface .qd-src pre .kw {
+  color: #63D7D7
+}
+
+[data-theme="dark"] .ldk-surface .qd-src pre .str {
+  color: #14D64D
+}
+
+.ldk-surface .pager {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--muted)
+}
+
+.ldk-surface .pager button {
+  border: 1px solid var(--line-2);
+  background: var(--panel);
+  border-radius: 5px;
+  min-width: 28px;
+  height: 26px
+}
+
+.ldk-surface .pager button.on {
+  background: #1D1D1C;
+  color: #FAF8F5;
+  border-color: #1D1D1C
+}
+
+[data-theme="dark"] .ldk-surface .pager button.on {
+  background: #14D64D;
+  color: #0A1F10;
+  border-color: #14D64D
+}
+
+.ldk-surface .pager button:disabled {
+  opacity: .4;
+  cursor: default
+}
+
+.ldk-surface details.status {
+  margin-top: 22px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12px
+}
+
+.ldk-surface details.status summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-2)
+}
+
+.ldk-surface .src {
+  display: grid;
+  grid-template-columns: 180px 90px 90px 80px 1fr;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+  align-items: start
+}
+
+.ldk-surface .src:last-child {
+  border: 0
+}
+
+.ldk-surface .src .st-live {
+  color: var(--ok);
+  font-weight: 600
+}
+
+.ldk-surface .src .st-error,
+.ldk-surface .src .st-empty {
+  color: var(--bad);
+  font-weight: 600
+}
+
+.ldk-surface .src .st-loading {
+  color: var(--warn);
+  font-weight: 600
+}
+
+.ldk-surface .foot-note {
+  font-size: 11px;
+  color: var(--faint);
+  margin-top: 10px;
+  line-height: 1.6
+}
+
+.ldk-surface .banner {
+  background: rgba(186, 27, 27, .07);
+  border: 1px solid rgba(186, 27, 27, .3);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  display: none
+}
+
+.ldk-surface .banner.show {
+  display: block;
+  animation: banner-enter .28s cubic-bezier(.22, 1, .36, 1) both
+}
+
+@keyframes banner-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-10px)
+  }
+
+  to {
+    opacity: 1;
+    transform: none
+  }
+}
+
+.ldk-surface .banner b {
+  color: var(--bad)
+}
+
+.ldk-surface .banner.warn {
+  background: rgba(248, 182, 14, .14);
+  border-color: rgba(138, 100, 0, .35)
+}
+
+.ldk-surface .banner.warn b {
+  color: var(--warn)
+}
+
+/* Reveal panel: custom time range expands instead of jumping */
+.ldk-surface .tr-custom {
+  display: grid;
+  grid-template-rows: 0fr;
+  gap: 0;
+  margin-top: 0;
+  opacity: 0;
+  transition: grid-template-rows .28s ease, opacity .22s ease, margin-top .22s ease, gap .22s ease
+}
+
+.ldk-surface .tr-custom>* {
+  overflow: hidden;
+  min-height: 0
+}
+
+.ldk-surface .tr-custom-inner {
+  display: flex;
+  gap: 12px
+}
+
+.ldk-surface .tr-custom.on {
+  grid-template-rows: 1fr;
+  margin-top: 8px;
+  opacity: 1
+}
+
+.ldk-surface .tr-custom input {
+  width: 50%;
+  padding: 5px 6px
+}
+
+.ldk-surface .tr-note {
+  font-size: 11px;
+  color: var(--faint);
+  margin-top: 5px
+}

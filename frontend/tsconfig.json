@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": false,
+    "allowJs": true,
+    "checkJs": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist/types",
+    "skipLibCheck": true,
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src/**/*",
+    "vendor/**/*.js",
+    "vendor/**/*.tsx"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}

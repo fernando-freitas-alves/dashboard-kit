@@ -1,0 +1,415 @@
+/* dash-kit — 09-motion.css
+   Icon motion system and the reduced-motion overrides for the whole kit.
+   Load order matters: see dash-kit.css. */
+
+/* Icon motion — skill-ladder iconMotion.css (hover + click-flash + busy) */
+.ldk-surface .icon-motion-target {
+  display: inline-block;
+  flex-shrink: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  line-height: 0
+}
+
+.ldk-surface .icon-motion:not(:disabled):hover .icon-motion--nudge-left,
+.ldk-surface a.icon-motion:hover .icon-motion--nudge-left,
+.ldk-surface .icon-motion.icon-motion--click-flash .icon-motion--nudge-left {
+  animation: icon-motion-nudge-left .45s ease
+}
+
+.ldk-surface .icon-motion:not(:disabled):hover .icon-motion--nudge-right,
+.ldk-surface a.icon-motion:hover .icon-motion--nudge-right,
+.ldk-surface .icon-motion.icon-motion--click-flash .icon-motion--nudge-right {
+  animation: icon-motion-nudge-right .45s ease
+}
+
+.ldk-surface .icon-motion:not(:disabled):hover .icon-motion--nudge-up,
+.ldk-surface a.icon-motion:hover .icon-motion--nudge-up,
+.ldk-surface .icon-motion.icon-motion--click-flash .icon-motion--nudge-up {
+  animation: icon-motion-nudge-up .45s ease
+}
+
+.ldk-surface .icon-motion:not(:disabled):hover .icon-motion--nudge-down,
+.ldk-surface a.icon-motion:hover .icon-motion--nudge-down,
+.ldk-surface .icon-motion.icon-motion--click-flash .icon-motion--nudge-down {
+  animation: icon-motion-nudge-down .45s ease
+}
+
+.ldk-surface .icon-motion:not(:disabled):hover .icon-motion--nudge-ne,
+.ldk-surface a.icon-motion:hover .icon-motion--nudge-ne,
+.ldk-surface .icon-motion.icon-motion--click-flash .icon-motion--nudge-ne {
+  animation: icon-motion-nudge-ne .45s ease
+}
+
+.ldk-surface .icon-motion:not(:disabled):hover .icon-motion--nudge-nw,
+.ldk-surface a.icon-motion:hover .icon-motion--nudge-nw,
+.ldk-surface .icon-motion.icon-motion--click-flash .icon-motion--nudge-nw {
+  animation: icon-motion-nudge-nw .45s ease
+}
+
+.ldk-surface .icon-motion:not(:disabled):hover .icon-motion--spin,
+.ldk-surface a.icon-motion:hover .icon-motion--spin,
+.ldk-surface .icon-motion.icon-motion--click-flash .icon-motion--spin {
+  animation: icon-motion-spin-once .55s ease
+}
+
+.ldk-surface .icon-motion:not(:disabled):hover .icon-motion--pop,
+.ldk-surface a.icon-motion:hover .icon-motion--pop,
+.ldk-surface .icon-motion.icon-motion--click-flash .icon-motion--pop {
+  animation: icon-motion-pop .4s ease
+}
+
+.ldk-surface .icon-motion:not(:disabled):hover .icon-motion--pulse,
+.ldk-surface a.icon-motion:hover .icon-motion--pulse,
+.ldk-surface .icon-motion.icon-motion--click-flash .icon-motion--pulse {
+  animation: icon-motion-pulse .5s ease
+}
+
+.ldk-surface .icon-motion:not(:disabled):hover .icon-motion--wiggle,
+.ldk-surface a.icon-motion:hover .icon-motion--wiggle,
+.ldk-surface .icon-motion.icon-motion--click-flash .icon-motion--wiggle {
+  animation: icon-motion-wiggle .45s ease
+}
+
+.ldk-surface .icon-motion:not(:disabled):hover .icon-motion--flip-x,
+.ldk-surface a.icon-motion:hover .icon-motion--flip-x,
+.ldk-surface .icon-motion.icon-motion--click-flash .icon-motion--flip-x {
+  animation: icon-motion-flip-x .5s ease
+}
+
+.ldk-surface .icon-motion--busy .icon-motion--spin,
+.ldk-surface .icon-motion--busy .icon-motion--spin-loop {
+  animation: icon-motion-spin-loop .9s linear infinite
+}
+
+.ldk-surface .icon-motion--busy .icon-motion--pulse {
+  animation: icon-motion-pulse-loop .85s ease-in-out infinite
+}
+
+.ldk-surface .icon-motion--busy .icon-motion--nudge-down {
+  animation: icon-motion-nudge-down-loop .75s ease-in-out infinite
+}
+
+.ldk-surface .icon-motion--busy .icon-motion--nudge-up {
+  animation: icon-motion-nudge-up-loop .75s ease-in-out infinite
+}
+
+/* Dropdown carets (CSS ::after) — bob without fighting the chevron rotate */
+.ldk-surface .ms-btn.icon-motion:not(:disabled):hover::after,
+.ldk-surface .lb-btn.icon-motion:not(:disabled):hover::after,
+.ldk-surface .ms-btn.icon-motion.icon-motion--click-flash::after,
+.ldk-surface .lb-btn.icon-motion.icon-motion--click-flash::after {
+  animation: icon-motion-caret-pop .4s ease
+}
+
+.ldk-surface .ms.open .ms-btn.icon-motion:not(:disabled):hover::after,
+.ldk-surface .lb.open .lb-btn.icon-motion:not(:disabled):hover::after,
+.ldk-surface .ms.open .ms-btn.icon-motion.icon-motion--click-flash::after,
+.ldk-surface .lb.open .lb-btn.icon-motion.icon-motion--click-flash::after {
+  animation-name: icon-motion-caret-pop-open
+}
+
+@keyframes icon-motion-caret-pop {
+
+  0%,
+  100% {
+    transform: translateY(-70%) rotate(45deg) scale(1)
+  }
+
+  40% {
+    transform: translateY(-70%) rotate(45deg) scale(1.3)
+  }
+
+  70% {
+    transform: translateY(-70%) rotate(45deg) scale(.92)
+  }
+}
+
+@keyframes icon-motion-caret-pop-open {
+
+  0%,
+  100% {
+    transform: translateY(-30%) rotate(225deg) scale(1)
+  }
+
+  40% {
+    transform: translateY(-30%) rotate(225deg) scale(1.3)
+  }
+
+  70% {
+    transform: translateY(-30%) rotate(225deg) scale(.92)
+  }
+}
+
+@keyframes icon-motion-nudge-left {
+
+  0%,
+  100% {
+    transform: translateX(0)
+  }
+
+  40% {
+    transform: translateX(-4px)
+  }
+
+  70% {
+    transform: translateX(-1px)
+  }
+}
+
+@keyframes icon-motion-nudge-right {
+
+  0%,
+  100% {
+    transform: translateX(0)
+  }
+
+  40% {
+    transform: translateX(4px)
+  }
+
+  70% {
+    transform: translateX(1px)
+  }
+}
+
+@keyframes icon-motion-nudge-up {
+
+  0%,
+  100% {
+    transform: translateY(0)
+  }
+
+  40% {
+    transform: translateY(-4px)
+  }
+
+  70% {
+    transform: translateY(-1px)
+  }
+}
+
+@keyframes icon-motion-nudge-down {
+
+  0%,
+  100% {
+    transform: translateY(0)
+  }
+
+  40% {
+    transform: translateY(4px)
+  }
+
+  70% {
+    transform: translateY(1px)
+  }
+}
+
+@keyframes icon-motion-nudge-ne {
+
+  0%,
+  100% {
+    transform: translate(0, 0)
+  }
+
+  40% {
+    transform: translate(4px, -4px)
+  }
+
+  70% {
+    transform: translate(1px, -1px)
+  }
+}
+
+@keyframes icon-motion-nudge-nw {
+
+  0%,
+  100% {
+    transform: translate(0, 0)
+  }
+
+  40% {
+    transform: translate(-4px, -4px)
+  }
+
+  70% {
+    transform: translate(-1px, -1px)
+  }
+}
+
+@keyframes icon-motion-spin-once {
+  to {
+    transform: rotate(360deg)
+  }
+}
+
+@keyframes icon-motion-spin-loop {
+  to {
+    transform: rotate(360deg)
+  }
+}
+
+@keyframes icon-motion-pop {
+
+  0%,
+  100% {
+    transform: scale(1)
+  }
+
+  40% {
+    transform: scale(1.18)
+  }
+
+  70% {
+    transform: scale(.96)
+  }
+}
+
+@keyframes icon-motion-pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1
+  }
+
+  45% {
+    transform: scale(.88);
+    opacity: .75
+  }
+}
+
+@keyframes icon-motion-pulse-loop {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1
+  }
+
+  50% {
+    transform: scale(.9);
+    opacity: .7
+  }
+}
+
+@keyframes icon-motion-wiggle {
+
+  0%,
+  100% {
+    transform: rotate(0deg)
+  }
+
+  25% {
+    transform: rotate(-10deg)
+  }
+
+  50% {
+    transform: rotate(8deg)
+  }
+
+  75% {
+    transform: rotate(-4deg)
+  }
+}
+
+@keyframes icon-motion-flip-x {
+
+  0%,
+  100% {
+    transform: scaleX(1)
+  }
+
+  45% {
+    transform: scaleX(-1)
+  }
+}
+
+@keyframes icon-motion-nudge-down-loop {
+
+  0%,
+  100% {
+    transform: translateY(0)
+  }
+
+  50% {
+    transform: translateY(3px)
+  }
+}
+
+@keyframes icon-motion-nudge-up-loop {
+
+  0%,
+  100% {
+    transform: translateY(0)
+  }
+
+  50% {
+    transform: translateY(-3px)
+  }
+}
+
+.ldk-surface .btn,
+.ldk-surface .tb-btn,
+.ldk-surface .qbtn,
+.ldk-surface .subtab,
+.ldk-surface .ms-btn,
+.ldk-surface .lb-btn {
+  transition: transform .12s ease, border-color .15s ease, background .15s ease, color .15s ease, opacity .15s ease
+}
+
+.ldk-surface .btn:active:not(:disabled),
+.ldk-surface .tb-btn:active,
+.ldk-surface .qbtn:active,
+.ldk-surface .subtab:active {
+  transform: scale(.96)
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .ldk-surface table.t.anim tbody tr,
+  .ldk-surface table.t.anim td .barbg,
+  .ldk-surface .card-b.anim-in,
+  .ldk-surface .card.block-enter,
+  .ldk-surface .chip,
+  .ldk-surface .dd-pop.open,
+  .ldk-surface .ms-pop.open,
+  .ldk-surface .split-menu.open,
+  .ldk-surface .sidebar,
+  .ldk-surface .sidebar .sb-body,
+  .ldk-surface .sidebar .sb-title,
+  .ldk-surface .sidebar .sb-collapse svg,
+  .ldk-surface .f-group.sb-enter,
+  .ldk-surface .card,
+  .ldk-surface .card.magic-card::after,
+  .ldk-surface .tbl-tools.tbl-tools--enter>.lb,
+  .ldk-surface .tbl-tools.tbl-tools--enter>.split-wrap,
+  .ldk-surface .card-h .lb.ctrl-enter,
+  .ldk-surface .ms-btn.ctrl-enter,
+  #ldk-tip.ldk-popover,
+  .ldk-surface main,
+  .ldk-surface .banner.show,
+  .ldk-surface .card-busy,
+  .ldk-surface .card-busy-spin,
+  .ldk-surface .icon-motion--busy .icon-motion-target,
+  .ldk-surface .icon-motion.icon-motion--click-flash .icon-motion-target,
+  .ldk-surface .ms-btn.icon-motion::after,
+  .ldk-surface .lb-btn.icon-motion::after {
+    animation: none !important;
+    transition: none !important
+  }
+
+  .ldk-surface .card.is-busy .card-b> :not(.card-busy):not(.skeleton) {
+    opacity: .55;
+    filter: none
+  }
+
+  .ldk-surface .card.magic-card:hover {
+    transform: none
+  }
+
+  .ldk-surface .icon-motion:not(:disabled):hover .icon-motion-target,
+  .ldk-surface a.icon-motion:hover .icon-motion-target {
+    animation: none !important
+  }
+}

@@ -1,0 +1,419 @@
+/* dash-kit — 07-charts.css
+   Chart surface: legend, axes, marks, brushing, cross-filter rows, tooltip.
+   Load order matters: see dash-kit.css. */
+
+.ldk-surface .legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 0 0 6px;
+  font-size: 11px;
+  color: var(--text-2);
+  align-items: center
+}
+
+.ldk-surface .brush-hint {
+  margin-left: auto;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--faint);
+  letter-spacing: .01em
+}
+
+.ldk-surface .card-b.chart.is-brushing {
+  cursor: crosshair !important;
+  user-select: none
+}
+
+.ldk-surface .card-b.chart.is-brushing .seg,
+.ldk-surface .card-b.chart.is-brushing .bk {
+  pointer-events: none
+}
+
+/* Date-range brush. The wash sits on top of the stacked colours, so it is
+   deliberately desaturated — it should mark the range, not repaint the bars.
+   Geometry is set in charts.js; only colour lives here so themes can differ. */
+.ldk-surface .brush-fill {
+  fill: color-mix(in srgb, var(--green) 32%, var(--muted));
+  fill-opacity: .1;
+  stroke: color-mix(in srgb, var(--green) 45%, var(--muted));
+  stroke-opacity: .45
+}
+
+/* A translucent wash carries less on a light panel than on a dark one. */
+[data-theme="light"] .ldk-surface .brush-fill {
+  fill-opacity: .15
+}
+
+.ldk-surface .brush-edge {
+  stroke: color-mix(in srgb, var(--green) 58%, var(--muted));
+  stroke-opacity: .7
+}
+
+/* Range label pill — sits in the extra top margin; keep it in the same family as the wash.
+   Click (or the ×) clears the period filter — pointer-events enabled on the tag in charts.js. */
+.ldk-surface .brush-tag {
+  cursor: pointer
+}
+
+.ldk-surface .brush-tag rect {
+  fill: color-mix(in srgb, var(--green) 55%, var(--muted));
+  fill-opacity: .92;
+  stroke: color-mix(in srgb, var(--green) 40%, var(--muted));
+  stroke-opacity: .55;
+  stroke-width: 1
+}
+
+.ldk-surface .brush-tag text {
+  fill: var(--text)
+}
+
+.ldk-surface .brush-tag .brush-tag-clear {
+  fill: var(--text);
+  fill-opacity: .72;
+  pointer-events: none
+}
+
+.ldk-surface .lg {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  user-select: none;
+  max-width: 260px;
+  border-radius: 6px;
+  padding: 3px 7px;
+  margin: -3px -7px;
+  transition: background .16s ease, transform .16s cubic-bezier(.22, 1, .36, 1), color .16s ease, opacity .16s ease
+}
+
+.ldk-surface .lg.filterable {
+  cursor: default
+}
+
+.ldk-surface .lg i,
+.ldk-surface .lg .lg-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex: none;
+  transition: transform .16s cubic-bezier(.22, 1, .36, 1), box-shadow .16s ease
+}
+
+.ldk-surface .lg .lg-swatch {
+  position: relative;
+  cursor: pointer
+}
+
+.ldk-surface .lg .lg-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 1px 2px;
+  margin: -1px -2px
+}
+
+.ldk-surface .lg.filterable .lg-label:hover,
+.ldk-surface .lg.filterable .lg-label:focus-visible {
+  background: color-mix(in srgb, var(--green) 12%, transparent);
+  color: var(--text)
+}
+
+.ldk-surface .lg.filterable .lg-swatch:hover,
+.ldk-surface .lg.filterable .lg-swatch:focus-visible {
+  transform: scale(1.18);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--green) 28%, transparent)
+}
+
+.ldk-surface .lg.filterable .lg-swatch[aria-pressed="true"]:hover::after,
+.ldk-surface .lg.filterable .lg-swatch[aria-pressed="true"]:focus-visible::after {
+  content: "×";
+  position: absolute;
+  inset: -1px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  background: color-mix(in srgb, #000 42%, transparent);
+  border-radius: 2px;
+  pointer-events: none
+}
+
+.ldk-surface .lg i.ln {
+  height: 3px;
+  border-radius: 2px
+}
+
+.ldk-surface .lg span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+
+.ldk-surface .lg:not(.filterable):hover,
+.ldk-surface .lg:not(.filterable):focus-visible {
+  background: color-mix(in srgb, var(--green) 12%, transparent);
+  color: var(--text);
+  transform: translateY(-1px)
+}
+
+.ldk-surface .lg:not(.filterable):hover i,
+.ldk-surface .lg:not(.filterable):focus-visible i {
+  transform: scale(1.18);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--green) 28%, transparent)
+}
+
+.ldk-surface .lg .lg-swatch:focus-visible,
+.ldk-surface .lg .lg-label:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--green) 62%, transparent);
+  outline-offset: 2px
+}
+
+.ldk-surface .lg:not(.filterable):active {
+  transform: translateY(0) scale(.98)
+}
+
+.ldk-surface .lg.off {
+  opacity: .35
+}
+
+.ldk-surface .lg.off:hover {
+  opacity: .7
+}
+
+/* Series excluded by the current filter. Muted and desaturated so the legend
+   reads as "these are out" at a glance; hover and focus bring them back to
+   full strength because they are still clickable. */
+.ldk-surface .lg.dim {
+  opacity: .42
+}
+
+.ldk-surface .lg.dim i,
+.ldk-surface .lg.dim .lg-swatch {
+  filter: saturate(.25)
+}
+
+.ldk-surface .lg.dim:hover,
+.ldk-surface .lg.dim:focus-visible {
+  opacity: 1
+}
+
+.ldk-surface .lg.dim:hover i,
+.ldk-surface .lg.dim:focus-visible i,
+.ldk-surface .lg.dim:hover .lg-swatch,
+.ldk-surface .lg.dim:focus-visible .lg-swatch {
+  filter: none
+}
+
+/* Active filter — ring on the swatch, weight on the label. */
+.ldk-surface .lg .lg-swatch[aria-pressed="true"] {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--green) 45%, transparent)
+}
+
+.ldk-surface .lg.filterable:has(.lg-swatch[aria-pressed="true"]) .lg-label {
+  color: var(--text);
+  font-weight: 600
+}
+
+.ldk-surface svg text {
+  fill: var(--muted);
+  font-family: Poppins, sans-serif;
+  font-size: 10px
+}
+
+.ldk-surface .axis path,
+.ldk-surface .axis line {
+  stroke: var(--line-2)
+}
+
+.ldk-surface .gridl line {
+  stroke: var(--line);
+  stroke-dasharray: 2 3
+}
+
+.ldk-surface .gridl path {
+  display: none
+}
+
+.ldk-surface .bk {
+  cursor: pointer
+}
+
+.ldk-surface .bk .bg {
+  fill: transparent;
+  transition: fill .16s ease
+}
+
+.ldk-surface .bk:hover .bg {
+  fill: color-mix(in srgb, var(--green) 11%, var(--panel-2))
+}
+
+.ldk-surface .bk.sel .bg {
+  fill: var(--sel)
+}
+
+.ldk-surface .seg,
+.ldk-surface .pie-slice {
+  cursor: pointer;
+  transition: opacity .15s ease, filter .16s ease, stroke .16s ease, stroke-width .16s ease
+}
+
+/* Hover a mark → lift it; soften the rest of the chart */
+.ldk-surface .card-b.chart:not(.is-brushing) svg:has(.seg:hover) .seg:not(:hover),
+.ldk-surface .card-b.chart:not(.is-brushing) svg:has(.pie-slice:hover) .pie-slice:not(:hover) {
+  filter: saturate(.55) brightness(.88);
+  opacity: .38 !important
+}
+
+.ldk-surface .card-b.chart:not(.is-brushing) .seg:hover,
+.ldk-surface .card-b.chart:not(.is-brushing) .pie-slice:hover {
+  filter: brightness(1.14) saturate(1.08);
+  opacity: 1 !important;
+  stroke: color-mix(in srgb, var(--text) 55%, transparent);
+  stroke-width: 1.25px;
+  paint-order: stroke fill
+}
+
+.ldk-surface .weekend {
+  fill: var(--panel-2)
+}
+
+.ldk-surface .xl {
+  cursor: pointer;
+  transition: fill .15s ease, font-size .15s ease
+}
+
+.ldk-surface .xl:hover {
+  fill: var(--text);
+  font-weight: 600
+}
+
+/* Filterable table rows (dimension cells) */
+.ldk-surface table.t tbody tr:has(td.dim) {
+  transition: background .15s ease
+}
+
+.ldk-surface table.t tbody tr:has(td.dim):hover td {
+  background: color-mix(in srgb, var(--green) 9%, transparent)
+}
+
+.ldk-surface table.t tbody tr:has(td.dim):hover td.dim {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 2px
+}
+
+.ldk-surface table.t tbody tr.sel:has(td.dim):hover td {
+  background: color-mix(in srgb, var(--green) 16%, transparent)
+}
+
+.ldk-surface table.t td.dim {
+  cursor: pointer;
+  color: var(--text);
+  transition: color .15s ease
+}
+
+.ldk-surface table.t td.dim:hover {
+  color: var(--link);
+  text-decoration: underline
+}
+
+.ldk-surface table.t tr.sel td {
+  background: var(--sel)
+}
+
+.ldk-surface table.t tr.faded td {
+  opacity: .45
+}
+
+.ldk-surface table.t tbody tr.faded:has(td.dim):hover td {
+  opacity: 1
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .ldk-surface .lg,
+  .ldk-surface .lg i,
+  .ldk-surface .lg:hover,
+  .ldk-surface .seg,
+  .ldk-surface .pie-slice,
+  .ldk-surface .bk .bg,
+  .ldk-surface table.t tbody tr:has(td.dim) {
+    transition: none !important;
+    transform: none !important
+  }
+
+  .ldk-surface .card-b.chart:not(.is-brushing) svg:has(.seg:hover) .seg:not(:hover),
+  .ldk-surface .card-b.chart:not(.is-brushing) svg:has(.pie-slice:hover) .pie-slice:not(:hover) {
+    filter: none;
+    opacity: .5 !important
+  }
+
+  .ldk-surface .card-b.chart:not(.is-brushing) .seg:hover,
+  .ldk-surface .card-b.chart:not(.is-brushing) .pie-slice:hover {
+    filter: none
+  }
+}
+
+#ldk-tip.ldk-popover {
+  position: fixed;
+  z-index: var(--layer-tooltip);
+  pointer-events: none;
+  background: var(--tip-bg);
+  color: var(--tip-ink);
+  border: 1px solid var(--tip-line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 11px;
+  line-height: 1.5;
+  box-shadow: var(--tip-shadow);
+  max-width: 320px;
+  display: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity .16s cubic-bezier(.22, 1, .36, 1), transform .16s cubic-bezier(.22, 1, .36, 1)
+}
+
+#ldk-tip.ldk-popover.on {
+  opacity: 1;
+  transform: none
+}
+
+#ldk-tip.ldk-popover .t {
+  font-weight: 600;
+  margin-bottom: 3px
+}
+
+#ldk-tip.ldk-popover .r {
+  display: flex;
+  gap: 8px;
+  align-items: center
+}
+
+#ldk-tip.ldk-popover .r i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex: none
+}
+
+#ldk-tip.ldk-popover .r span {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+
+#ldk-tip.ldk-popover .r b {
+  font-weight: 600
+}
+
+#ldk-tip.ldk-popover .h {
+  color: var(--tip-hint);
+  margin-top: 4px;
+  font-size: 10px
+}

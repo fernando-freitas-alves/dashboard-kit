@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dashboard Kit · Integration guide</title><style>body{font:17px/1.65 system-ui;color:#202239;background:#f7f8fc;max-width:800px;padding:40px 24px;margin:auto}a{color:#5b5bd6}pre{padding:24px;background:white;border:1px solid #dddfea;border-radius:12px;overflow:auto}h1{letter-spacing:-1.5px;font-size:44px}h2{font-size:24px;margin-top:36px}code{font-size:14px}</style><a href="./">← Playground</a><h1>Your dashboard. Your application.</h1><p>Dashboard Kit handles the board and chart UI. Your adapter controls data, persistence and access.</p><pre>import { Dashboard, createHttpAdapter } from '@loadsmart/dashboard-kit';
+import '@loadsmart/dashboard-kit/styles.css';
+
+const options = {
+  namespace: 'sales:v1:current-user',
+  adapter: createHttpAdapter('/api/dashboards', {
+    headers: () => ({ 'X-CSRF-Token': csrfToken })
+  }),
+};
+
+&lt;Dashboard options={options} /&gt;</pre><h2>Connect your backend</h2><p>Implement the DashboardAdapter interface, or use the Python service with your own scope resolver and data adapter. Query validation, user permissions, authentication and CSRF are host responsibilities.</p><h2>Style it</h2><p>Override dashboard CSS variables. Supply your own palette, toolbar, chart editor, table columns and chart renderers through options. Keep the options object stable between renders.</p><h2>Try AI</h2><p>Copy demo/.env.example to demo/.env and set OPENAI_API_KEY. The key stays server-side. Set OPENAI_MODEL and OPENAI_REASONING_EFFORT for a model available to your account. Restart the demo.</p><h2>Before hosting</h2><p>This sample is a local, single-user playground with synthetic data. Replace its local identity and origin policy with your application's authentication and authorization. Add production storage, CSRF protection, request limits, AI budgets and a sharing policy.</p></html>

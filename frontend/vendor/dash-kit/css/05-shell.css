@@ -1,0 +1,757 @@
+/* dash-kit — 05-shell.css
+   App shell: sidebar, filter groups, listboxes, buttons, chips, tabs, grid.
+   Load order matters: see dash-kit.css. */
+
+.ldk-surface .shell {
+  display: flex;
+  min-height: calc(100vh - 56px)
+}
+
+.ldk-surface .shell.is-nav-resizing {
+  cursor: col-resize
+}
+
+.ldk-surface .shell.is-nav-resizing .sidebar {
+  transition: none
+}
+
+.ldk-surface .shell.is-nav-resizing .sidebar .sb-body,
+.ldk-surface .shell.is-nav-resizing .sidebar .sb-title,
+.ldk-surface .shell.is-nav-resizing .sidebar .sb-collapse svg {
+  transition: none
+}
+
+.ldk-surface .sidebar {
+  --sb-width: 248px;
+  width: var(--sb-width);
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border-right: 1px solid var(--line);
+  padding: 16px 14px;
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow: hidden;
+  transition: width .34s cubic-bezier(.22, 1, .36, 1), padding .34s cubic-bezier(.22, 1, .36, 1), border-color .2s ease
+}
+
+.ldk-surface .sidebar.is-resizing {
+  user-select: none
+}
+
+.ldk-surface .sidebar .sb-body,
+.ldk-surface .sidebar .sb-title {
+  opacity: 1;
+  /* No default transform — it would trap position:fixed descendants */
+  transition: opacity .22s cubic-bezier(.22, 1, .36, 1), transform .28s cubic-bezier(.22, 1, .36, 1);
+  transform-origin: left center
+}
+
+.ldk-surface .sidebar .sb-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overflow-x: hidden
+}
+
+.ldk-surface .sidebar.collapsed {
+  width: var(--sb-width);
+  padding: 16px 8px
+}
+
+.ldk-surface .sidebar.collapsed .sb-head {
+  justify-content: center
+}
+
+.ldk-surface .sidebar.collapsed .sb-collapse {
+  margin-left: 0
+}
+
+.ldk-surface .sidebar.collapsed .sb-body,
+.ldk-surface .sidebar.collapsed .sb-title {
+  opacity: 0;
+  transform: translateX(-8px);
+  pointer-events: none;
+  visibility: hidden;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden
+}
+
+/* AppearStagger-style filter rows (skill-ladder PANEL_ENTER / staggerDelay) */
+.ldk-surface .f-group.sb-enter {
+  animation: sb-row-enter .28s cubic-bezier(.22, 1, .36, 1) both
+}
+
+@keyframes sb-row-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-10px)
+  }
+
+  to {
+    opacity: 1;
+    transform: none
+  }
+}
+
+.ldk-surface main {
+  transition: opacity .2s ease;
+  min-width: 0;
+  flex: 1
+}
+
+.ldk-surface .shell.sb-resizing main {
+  opacity: .92
+}
+
+.ldk-surface .sb-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+  min-width: 0
+}
+
+.ldk-surface .sb-title {
+  font-weight: 700;
+  font-size: 14px;
+  min-width: 0
+}
+
+/* Borderless collapse control — same as skill-ladder admin-nav-collapse */
+.ldk-surface .sb-collapse {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--faint);
+  cursor: pointer
+}
+
+.ldk-surface .sb-collapse:hover,
+.ldk-surface .sb-collapse:focus-visible {
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+  color: var(--text)
+}
+
+.ldk-surface .sb-collapse:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px
+}
+
+.ldk-surface .sb-collapse svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  transition: transform .24s cubic-bezier(.22, 1, .36, 1)
+}
+
+.ldk-surface .sidebar.collapsed .sb-collapse svg {
+  transform: rotate(180deg)
+}
+
+/* Drag edge — skill-ladder admin-nav-resize */
+.ldk-surface .sb-resize {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  width: 6px;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: col-resize;
+  touch-action: none
+}
+
+.ldk-surface .sb-resize:hover,
+.ldk-surface .sb-resize:focus-visible,
+.ldk-surface .sidebar.is-resizing .sb-resize {
+  background: color-mix(in srgb, var(--accent) 35%, transparent)
+}
+
+.ldk-surface .sb-resize:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px
+}
+
+.ldk-surface .f-group {
+  margin-bottom: 14px
+}
+
+.ldk-surface .f-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between
+}
+
+.ldk-surface .f-label .clr {
+  color: var(--link);
+  font-weight: 500;
+  cursor: pointer;
+  display: none
+}
+
+.ldk-surface .f-group.has .f-label .clr {
+  display: inline
+}
+
+.ldk-surface .ms {
+  position: relative
+}
+
+/* Shared dropdown trigger (filters + listboxes) */
+.ldk-surface .ms-btn,
+.ldk-surface .lb-btn {
+  box-sizing: border-box;
+  width: 100%;
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  padding: 5px 28px 5px 9px;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.35;
+  min-height: var(--ctrl-h)
+}
+
+.ldk-surface .ms-btn::after,
+.ldk-surface .lb-btn::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid var(--muted);
+  border-bottom: 1.5px solid var(--muted);
+  transform: translateY(-70%) rotate(45deg);
+  transition: transform .15s ease
+}
+
+.ldk-surface .ms.open .ms-btn::after,
+.ldk-surface .lb.open .lb-btn::after {
+  transform: translateY(-30%) rotate(225deg)
+}
+
+.ldk-surface .f-group.has .ms-btn,
+.ldk-surface .lb.has .lb-btn {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--green) 38%, transparent);
+  background: color-mix(in srgb, var(--green) 13%, transparent)
+}
+
+.ldk-surface .lb {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  vertical-align: middle;
+  align-self: center
+}
+
+.ldk-surface .lb.lb-field {
+  display: flex;
+  width: 100%
+}
+
+.ldk-surface .lb.lb-compact {
+  display: inline-flex;
+  min-width: 7.5rem
+}
+
+.ldk-surface .lb.lb-compact .lb-btn {
+  height: var(--ctrl-h);
+  padding: 0 28px 0 10px;
+  font-size: 12px
+}
+
+/* Body-ported popovers — never clipped by sidebar/card overflow */
+#ldk-dd-portal.ldk-surface {
+  position: fixed;
+  inset: 0;
+  z-index: var(--layer-popover);
+  pointer-events: none
+}
+
+.ldk-surface .dd-pop,
+.ldk-surface .ms-pop,
+.ldk-surface .split-menu {
+  position: fixed;
+  z-index: var(--layer-popover);
+  background: var(--panel);
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .28);
+  padding: 8px;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  pointer-events: auto;
+  max-width: min(360px, calc(100vw - 16px))
+}
+
+.ldk-surface .dd-pop.open,
+.ldk-surface .ms-pop.open,
+.ldk-surface .split-menu.open {
+  display: flex;
+  animation: menu-pop-below .28s cubic-bezier(.22, 1, .36, 1) both;
+  transform-origin: top center
+}
+
+.ldk-surface .dd-pop.open.dd-pop--above,
+.ldk-surface .ms-pop.open.dd-pop--above,
+.ldk-surface .split-menu.open.dd-pop--above {
+  animation-name: menu-pop-above;
+  transform-origin: bottom center
+}
+
+/* Reposition / refresh must not restart the open animation (that reads as flicker). */
+.ldk-surface .dd-pop.open.dd-pop--settled,
+.ldk-surface .ms-pop.open.dd-pop--settled,
+.ldk-surface .split-menu.open.dd-pop--settled {
+  animation: none !important
+}
+
+@keyframes menu-pop-below {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(.96)
+  }
+
+  to {
+    opacity: 1;
+    transform: none
+  }
+}
+
+@keyframes menu-pop-above {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(.96)
+  }
+
+  to {
+    opacity: 1;
+    transform: none
+  }
+}
+
+/* Table / header listboxes: fade in when remounted after a data load */
+@keyframes ctrl-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-5px)
+  }
+
+  to {
+    opacity: 1;
+    transform: none
+  }
+}
+
+.ldk-surface .tbl-tools.tbl-tools--enter>.lb,
+.ldk-surface .tbl-tools.tbl-tools--enter>.split-wrap,
+.ldk-surface .card-h .lb.ctrl-enter,
+.ldk-surface .ms-btn.ctrl-enter {
+  animation: ctrl-enter .3s cubic-bezier(.22, 1, .36, 1) both
+}
+
+.ldk-surface .tbl-tools.tbl-tools--enter>.lb:nth-of-type(1) {
+  animation-delay: .02s
+}
+
+.ldk-surface .tbl-tools.tbl-tools--enter>.lb:nth-of-type(2) {
+  animation-delay: .06s
+}
+
+.ldk-surface .tbl-tools.tbl-tools--enter>.split-wrap {
+  animation-delay: .1s
+}
+
+/* Hide native selects until enhanceSelect wraps them (avoids a one-frame flash). */
+.ldk-surface .tbl-tools select:not(.lb-native),
+.ldk-surface .auto-ref select:not(.lb-native),
+.ldk-surface .card-h select:not(.lb-native),
+.ldk-surface #fg-time select:not(.lb-native) {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+  overflow: hidden
+}
+
+.ldk-surface .ms-pop input,
+.ldk-surface .dd-pop input {
+  width: 100%;
+  margin-bottom: 6px;
+  flex: none
+}
+
+.ldk-surface .ms-list,
+.ldk-surface .lb-list {
+  max-height: none;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 2px
+}
+
+.ldk-surface .ms-item,
+.ldk-surface .lb-opt {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  width: 100%;
+  text-align: left;
+  font-family: inherit
+}
+
+.ldk-surface .ms-item:hover,
+.ldk-surface .lb-opt:hover,
+.ldk-surface .lb-opt:focus-visible {
+  background: var(--panel-2);
+  outline: none
+}
+
+.ldk-surface .lb-opt[aria-selected="true"] {
+  background: var(--sel)
+}
+
+.ldk-surface .ms-item .cnt,
+.ldk-surface .lb-opt .cnt {
+  margin-left: auto;
+  color: var(--faint);
+  font-size: 11px
+}
+
+.ldk-surface .split-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: inherit;
+  font: inherit;
+  cursor: pointer
+}
+
+.ldk-surface .split-menu button:hover {
+  background: var(--sel)
+}
+
+.ldk-surface .split-menu .lbl {
+  display: block;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text)
+}
+
+.ldk-surface .split-menu .desc {
+  display: block;
+  font-size: 11px;
+  color: var(--faint);
+  margin-top: 2px;
+  line-height: 1.4
+}
+
+.ldk-surface select.lb-native {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0
+}
+
+.ldk-surface .ms-item input {
+  margin: 0;
+  width: auto
+}
+
+.ldk-surface .sb-foot {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px
+}
+
+.ldk-surface .sb-foot .btn {
+  width: 100%
+}
+
+.ldk-surface .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 1px solid var(--line-2);
+  background: var(--panel);
+  border-radius: 6px;
+  padding: 0 10px;
+  min-height: var(--ctrl-h);
+  height: var(--ctrl-h);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1
+}
+
+.ldk-surface .btn:hover {
+  border-color: var(--blue)
+}
+
+.ldk-surface .btn.primary {
+  background: #202931;
+  color: #FCFCFF;
+  border-color: #202931
+}
+
+.ldk-surface main {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 20px 40px
+}
+
+.ldk-surface .xbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  min-height: 34px;
+  margin-bottom: 10px
+}
+
+.ldk-surface .xbar .lbl {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .6px
+}
+
+.ldk-surface .xbar .hint {
+  font-size: 12px;
+  color: var(--faint)
+}
+
+/* Active filter chips — min-height + line-height room for descenders (g, y, p). */
+.ldk-surface .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: color-mix(in srgb, var(--green) 13%, transparent);
+  border: 1px solid color-mix(in srgb, var(--green) 30%, transparent);
+  color: var(--text);
+  padding: 4px 6px 4px 10px;
+  min-height: var(--ctrl-h);
+  box-sizing: border-box;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  line-height: 1.35;
+  max-width: 420px;
+  animation: chip-in .28s cubic-bezier(.22, 1, .36, 1) both
+}
+
+@keyframes chip-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(.96)
+  }
+
+  to {
+    opacity: 1;
+    transform: none
+  }
+}
+
+.ldk-surface .chip b {
+  font-weight: 600;
+  color: var(--text-2);
+  line-height: 1.35
+}
+
+.ldk-surface .chip span.v {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--link);
+  font-weight: 600;
+  line-height: 1.35
+}
+
+.ldk-surface .chip button {
+  border: 0;
+  background: transparent;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  padding: 0
+}
+
+.ldk-surface .chip button:hover {
+  background: rgba(0, 0, 0, .08);
+  color: var(--text)
+}
+
+.ldk-surface .chip.period {
+  background: color-mix(in srgb, var(--green) 15%, transparent);
+  border-color: color-mix(in srgb, var(--green) 36%, transparent)
+}
+
+.ldk-surface .tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 16px
+}
+
+.ldk-surface .tab {
+  background: transparent;
+  border: 0;
+  padding: 10px 16px;
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px
+}
+
+.ldk-surface .tab.on {
+  color: var(--text);
+  border-image: var(--grad) 1;
+  border-bottom: 3px solid
+}
+
+.ldk-surface .subtabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 0
+}
+
+.ldk-surface .subtab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: var(--ctrl-h);
+  height: var(--ctrl-h);
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--text-2)
+}
+
+.ldk-surface .subtab.on {
+  background: #1D1D1C;
+  color: #FAF8F5;
+  border-color: #1D1D1C
+}
+
+[data-theme="dark"] .ldk-surface .subtab.on {
+  background: #14D64D;
+  color: #0A1F10;
+  border-color: #14D64D
+}
+
+.ldk-surface .grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start
+}
+
+.ldk-surface .s12 {
+  grid-column: span 12
+}
+
+.ldk-surface .s8 {
+  grid-column: span 8
+}
+
+.ldk-surface .s6 {
+  grid-column: span 6
+}
+
+.ldk-surface .s4 {
+  grid-column: span 4
+}
+
+@media (max-width:1100px) {
+
+  .ldk-surface .s4,
+  .ldk-surface .s6,
+  .ldk-surface .s8 {
+    grid-column: span 12
+  }
+}
+
+.ldk-surface .sec-h {
+  grid-column: span 12;
+  margin: 18px 0 0;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px
+}
+
+.ldk-surface .sec-h:first-child {
+  margin-top: 0
+}
+
+.ldk-surface .sec-h::before {
+  content: "";
+  width: 4px;
+  height: 20px;
+  border-radius: 2px;
+  background: var(--grad)
+}

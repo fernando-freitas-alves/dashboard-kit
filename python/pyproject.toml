@@ -1,0 +1,21 @@
+[project]
+name = "loadsmart-dashboard-kit"
+version = "0.1.0"
+description = "Dashboard documents, scoped persistence, Flask API and optional AI transport"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project.optional-dependencies]
+flask=["Flask>=3.0,<4"]
+
+[tool.setuptools.packages.find]
+include = ["loadsmart_dashboard_kit*"]
+exclude = ["tests*", "examples*"]
+
+[tool.setuptools]
+include-package-data = false

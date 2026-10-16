@@ -1,0 +1,118 @@
+/* dash-kit — 01-tokens.css
+   Theme contract: every colour, radius and layer the kit reads.
+   Load order matters: see dash-kit.css. */
+
+/* Surfaces match skill-ladder (warm charcoal / soft gray). Accent stays Loadsmart brand. */
+:root,
+[data-theme="dark"] {
+  --bg: #1D1D1C;
+  --panel: #2A2926;
+  --panel-2: #393634;
+  --line: #393634;
+  --line-2: #504B49;
+  --text: #FAF8F5;
+  --text-2: #D0C4C0;
+  --muted: #AB9E9A;
+  --faint: #8A7E7A;
+  --green: #14D64D;
+  --blue: #00C2C2;
+  --link: #3FE06E;
+  --slate: #AB9E9A;
+  --ok: #14D64D;
+  --warn: #F8B60E;
+  --bad: #FF4B32;
+  --orange: #FF4B32;
+  /* Muted target line (KPI thresholds) — less vivid than brand orange */
+  --target: #C45B4A;
+  --sel: rgba(20, 214, 77, .14);
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);
+  --grad: linear-gradient(45deg, #00D6D6 0%, #84F11E 100%);
+  --radius-pill: 999px;
+  --accent: #14D64D;
+  /* Hover tip surface — follows the theme, never a fixed charcoal. */
+  --tip-bg: #2A2926;
+  --tip-ink: #FAF8F5;
+  --tip-hint: #AB9E9A;
+  --tip-line: #504B49;
+  --tip-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+  /* Dropdowns under tooltips; tooltips under theme wipe. */
+  --layer-popover: 2147483645;
+  --layer-theme-wipe: 2147483647;
+  --layer-tooltip: 2147483646;
+  /* Shared height for inline controls (card headers, table tools, pills). */
+  --ctrl-h: 28px;
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg: #E6E9ED;
+  --panel: #EEF0F3;
+  --panel-2: #E1E5EA;
+  --line: #E6EDF2;
+  --line-2: #C1CED9;
+  --text: #202931;
+  --text-2: #3D4A55;
+  --muted: #5E768A;
+  --faint: #8FA3B3;
+  --green: #14D64D;
+  --blue: #00C2C2;
+  --link: #037C5E;
+  --slate: #3D4A55;
+  --ok: #037C5E;
+  --warn: #8A6400;
+  --bad: #BA1B1B;
+  --orange: #FF4B32;
+  /* Muted target line (KPI thresholds) — less vivid than brand orange */
+  --target: #C45B4A;
+  --sel: rgba(20, 214, 77, .14);
+  --shadow: 0 1px 2px rgba(32, 41, 49, .06), 0 8px 24px rgba(32, 41, 49, .10);
+  --grad: linear-gradient(45deg, #00D6D6 0%, #84F11E 100%);
+  --accent: #037C5E;
+  --tip-bg: #FFFFFF;
+  --tip-ink: #202931;
+  --tip-hint: #5E768A;
+  --tip-line: #C1CED9;
+  --tip-shadow: 0 8px 24px rgba(32, 41, 49, .18);
+  --layer-popover: 2147483645;
+  --layer-theme-wipe: 2147483647;
+  --layer-tooltip: 2147483646;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box
+}
+
+[hidden] {
+  display: none !important
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Poppins, system-ui, sans-serif;
+  font-size: 13px;
+  /* Cross-filtering re-renders every card; withScrollAnchor pins the card the
+     user clicked, so the browser's own scroll anchoring must not fight it. */
+  overflow-anchor: none
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  cursor: pointer
+}
+
+input,
+select {
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  padding: 6px 8px
+}

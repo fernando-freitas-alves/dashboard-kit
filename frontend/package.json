@@ -1,0 +1,53 @@
+{
+  "name": "@loadsmart/dashboard-kit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types/src/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./grid": {
+      "types": "./dist/types/src/board/gridSizes.d.ts",
+      "import": "./dist/grid.js"
+    }
+  },
+  "peerDependencies": {
+    "react": "^18.3.1 || ^19.0.0",
+    "react-dom": "^18.3.1 || ^19.0.0"
+  },
+  "dependencies": {
+    "d3": "7.9.0",
+    "react-grid-layout": "1.5.4",
+    "topojson-client": "3.1.0",
+    "us-atlas": "3.0.1",
+    "world-atlas": "2.0.2",
+    "react-resizable": "3.0.5"
+  },
+  "description": "Composable React dashboards with drag, resize, chart history and host-owned data adapters.",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/types/src/index.d.ts",
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "dist/**/*.css",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "README.md",
+    "dist/assets/countries-110m.json",
+    "dist/assets/states-10m.json"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "build": "node ../scripts/build.mjs",
+    "prepack": "npm run build"
+  },
+  "engines": {
+    "node": ">=22.12"
+  }
+}

@@ -1,0 +1,275 @@
+/* dash-kit — 11-patterns.css
+   Design patterns ported from skill-ladder: help labels, idle feedback, split actions.
+   Load order matters: see dash-kit.css. */
+
+/* ---------- Skill-ladder design patterns (ported) ---------- */
+.ldk-surface :root {
+  --warning-fill: #F8B60E;
+  --warning-ink: #1D1D1C;
+  --topbar-band: 56px;
+  --select-chevron: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23AB9E9A' viewBox='0 0 256 256'%3E%3Cpath d='M213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32z'/%3E%3C/svg%3E")
+}
+
+[data-theme="light"] .ldk-surface  {
+  --select-chevron: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%233D4A55' viewBox='0 0 256 256'%3E%3Cpath d='M213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32z'/%3E%3C/svg%3E")
+}
+
+/* Listbox select: hide UA arrow, inset chevron 12px */
+.ldk-surface select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: var(--select-chevron);
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+  padding-right: 32px
+}
+
+/* Stacked spacing: 30px between major blocks, 12px in rows */
+.ldk-surface .xbar {
+  gap: 12px;
+  margin-bottom: 12px
+}
+
+.ldk-surface .tabs {
+  margin-bottom: 30px
+}
+
+.ldk-surface .grid {
+  gap: 12px;
+  align-items: start
+}
+
+.ldk-surface .tbl-tools {
+  gap: 12px
+}
+
+.ldk-surface .card-h .subtabs {
+  gap: 6px;
+  margin: 0
+}
+
+/* Subtabs outside a card header keep stacked spacing */
+.ldk-surface .card-b>.subtabs {
+  margin: 0 0 12px;
+  gap: 12px
+}
+
+/* Sticky clearance under topbar */
+.ldk-surface .card,
+.ldk-surface .bento-head,
+.ldk-surface .kpi-h,
+.ldk-surface .sec-h,
+.ldk-surface #tab-kpis,
+.ldk-surface #tab-time {
+  scroll-margin-top: calc(var(--topbar-band) + 12px)
+}
+
+@media (max-width: 800px) {
+  .ldk-surface .sidebar {
+    position: static;
+    height: auto;
+    width: 100% !important;
+    border-right: 0;
+    border-bottom: 1px solid var(--line)
+  }
+
+  .ldk-surface .sidebar.collapsed {
+    width: 100% !important;
+    padding: 16px 14px
+  }
+
+  .ldk-surface .sidebar.collapsed .sb-body,
+  .ldk-surface .sidebar.collapsed .sb-title {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    visibility: visible;
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible
+  }
+
+  .ldk-surface .sb-resize {
+    display: none
+  }
+
+  .ldk-surface .shell {
+    flex-direction: column
+  }
+}
+
+/* Label with help (headline tiles / table heads) */
+.ldk-surface .label-help {
+  text-decoration: underline dotted;
+  text-decoration-color: color-mix(in srgb, var(--faint) 70%, transparent);
+  text-underline-offset: 2px;
+  cursor: help
+}
+
+.ldk-surface .card-h h3 .label-help {
+  white-space: nowrap
+}
+
+.ldk-surface .card-lead {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--faint);
+  margin: 0 14px 8px;
+  max-width: 72ch
+}
+
+.ldk-surface table.t th .label-help {
+  text-decoration: underline dotted;
+  text-decoration-color: color-mix(in srgb, var(--faint) 70%, transparent);
+  text-underline-offset: 2px
+}
+
+.ldk-surface table.t td.num,
+.ldk-surface table.t th.num,
+.ldk-surface .dash-num {
+  font-variant-numeric: tabular-nums
+}
+
+/* Empty chart state matches dash-empty */
+.ldk-surface .card-empty {
+  border: 1px dashed var(--line-2);
+  border-radius: 12px;
+  height: auto;
+  min-height: 180px;
+  padding: 16px;
+  line-height: 1.6
+}
+
+/* Idle action feedback */
+.ldk-surface .btn-idle {
+  opacity: .72
+}
+
+.ldk-surface .btn-shake {
+  animation: btn-shake 220ms ease-out 1
+}
+
+@keyframes btn-shake {
+  0% {
+    transform: translateX(0)
+  }
+
+  25% {
+    transform: translateX(-5px)
+  }
+
+  50% {
+    transform: translateX(4px)
+  }
+
+  75% {
+    transform: translateX(-2px)
+  }
+
+  100% {
+    transform: translateX(0)
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ldk-surface .btn-shake {
+    animation: none
+  }
+
+  .ldk-surface .tr-custom {
+    transition: none
+  }
+}
+
+.flash-tip {
+  position: fixed;
+  z-index: var(--layer-tooltip);
+  width: max-content;
+  max-width: min(280px, 70vw);
+  padding: 8px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  background: var(--panel-2);
+  color: var(--text-2);
+  font-size: 12px;
+  line-height: 1.45;
+  box-shadow: var(--shadow);
+  pointer-events: none;
+  transform: translate(-50%, -100%)
+}
+
+/* Split CSV action */
+.ldk-surface .split-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  align-self: center
+}
+
+.ldk-surface .split {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--panel);
+  height: var(--ctrl-h);
+  box-sizing: border-box
+}
+
+.ldk-surface .split .split-main,
+.ldk-surface .split .split-caret {
+  border: 0;
+  background: transparent;
+  padding: 0 10px;
+  font-weight: 500;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  line-height: 1
+}
+
+.ldk-surface .split .split-caret {
+  border-left: 1px solid var(--line-2);
+  padding: 0 8px
+}
+
+.ldk-surface .split:hover {
+  border-color: var(--blue)
+}
+
+/* Warning pill for source errors */
+.ldk-surface .pill.warn {
+  background: rgba(248, 182, 14, .16);
+  color: var(--warn)
+}
+
+.ldk-surface .pill.warn .dot {
+  background: var(--warning-fill)
+}
+
+/* Status panel reveal */
+.ldk-surface details.status {
+  margin-top: 30px
+}
+
+.ldk-surface details.status[open] summary {
+  margin-bottom: 12px
+}
+
+.ldk-surface .btn-primary-end {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px
+}
+
+.ldk-surface .sb-foot {
+  align-items: flex-end
+}
+
+.ldk-surface .sb-foot .btn-idle {
+  margin-left: 0
+}

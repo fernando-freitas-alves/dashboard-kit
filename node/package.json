@@ -1,0 +1,19 @@
+{
+  "name": "@loadsmart/dashboard-kit-anthropic",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "Server-side Anthropic transport for Dashboard Kit hosts.",
+  "exports": {
+    ".": "./anthropic.mjs"
+  },
+  "files": [
+    "anthropic.mjs",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  }
+}

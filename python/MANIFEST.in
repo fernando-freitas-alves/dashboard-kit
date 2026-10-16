@@ -1,0 +1,4 @@
+include LICENSE README.md pyproject.toml
+recursive-include loadsmart_dashboard_kit *.py
+global-exclude .env* *.sqlite* *.db *.pem *.key *.pyc
+prune tests

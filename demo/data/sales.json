@@ -1,0 +1,1622 @@
+[
+  {
+    "month": "2026-01-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 3630.0,
+    "orders": 49,
+    "tickets": 6,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 4537.5,
+    "orders": 54,
+    "tickets": 6,
+    "satisfaction": 4.3
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 5445.0,
+    "orders": 59,
+    "tickets": 6,
+    "satisfaction": 4.4
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 3950.0,
+    "orders": 53,
+    "tickets": 7,
+    "satisfaction": 4.3
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 4937.5,
+    "orders": 58,
+    "tickets": 7,
+    "satisfaction": 4.4
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 5925.0,
+    "orders": 63,
+    "tickets": 7,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 4270.0,
+    "orders": 57,
+    "tickets": 8,
+    "satisfaction": 4.4
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 5337.5,
+    "orders": 62,
+    "tickets": 8,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 6405.0,
+    "orders": 67,
+    "tickets": 8,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 4810.0,
+    "orders": 62,
+    "tickets": 7,
+    "satisfaction": 4.3
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 6012.5,
+    "orders": 67,
+    "tickets": 7,
+    "satisfaction": 4.4
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 7215.0,
+    "orders": 72,
+    "tickets": 7,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 5130.0,
+    "orders": 66,
+    "tickets": 8,
+    "satisfaction": 4.4
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 6412.5,
+    "orders": 71,
+    "tickets": 8,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 7695.0,
+    "orders": 76,
+    "tickets": 8,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 5450.0,
+    "orders": 70,
+    "tickets": 9,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 6812.5,
+    "orders": 75,
+    "tickets": 9,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 8175.0,
+    "orders": 80,
+    "tickets": 9,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 5990.0,
+    "orders": 75,
+    "tickets": 8,
+    "satisfaction": 4.4
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 7487.5,
+    "orders": 80,
+    "tickets": 8,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 8985.0,
+    "orders": 85,
+    "tickets": 8,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 6310.0,
+    "orders": 79,
+    "tickets": 9,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 7887.5,
+    "orders": 84,
+    "tickets": 9,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 9465.0,
+    "orders": 89,
+    "tickets": 9,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 6630.0,
+    "orders": 83,
+    "tickets": 10,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 8287.5,
+    "orders": 88,
+    "tickets": 10,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-01-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 9945.0,
+    "orders": 93,
+    "tickets": 10,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 4060.0,
+    "orders": 56,
+    "tickets": 7,
+    "satisfaction": 4.3
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 5075.0,
+    "orders": 61,
+    "tickets": 7,
+    "satisfaction": 4.4
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 6090.0,
+    "orders": 66,
+    "tickets": 7,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 4380.0,
+    "orders": 60,
+    "tickets": 8,
+    "satisfaction": 4.4
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 5475.0,
+    "orders": 65,
+    "tickets": 8,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 6570.0,
+    "orders": 70,
+    "tickets": 8,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 4700.0,
+    "orders": 64,
+    "tickets": 9,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 5875.0,
+    "orders": 69,
+    "tickets": 9,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 7050.0,
+    "orders": 74,
+    "tickets": 9,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 5240.0,
+    "orders": 69,
+    "tickets": 8,
+    "satisfaction": 4.4
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 6550.0,
+    "orders": 74,
+    "tickets": 8,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 7860.0,
+    "orders": 79,
+    "tickets": 8,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 5560.0,
+    "orders": 73,
+    "tickets": 9,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 6950.0,
+    "orders": 78,
+    "tickets": 9,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 8340.0,
+    "orders": 83,
+    "tickets": 9,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 5880.0,
+    "orders": 77,
+    "tickets": 10,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 7350.0,
+    "orders": 82,
+    "tickets": 10,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 8820.0,
+    "orders": 87,
+    "tickets": 10,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 6420.0,
+    "orders": 82,
+    "tickets": 9,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 8025.0,
+    "orders": 87,
+    "tickets": 9,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 9630.0,
+    "orders": 92,
+    "tickets": 9,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 6740.0,
+    "orders": 86,
+    "tickets": 10,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 8425.0,
+    "orders": 91,
+    "tickets": 10,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 10110.0,
+    "orders": 96,
+    "tickets": 10,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 7060.0,
+    "orders": 90,
+    "tickets": 11,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 8825.0,
+    "orders": 95,
+    "tickets": 11,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-02-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 10590.0,
+    "orders": 100,
+    "tickets": 11,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 4490.0,
+    "orders": 63,
+    "tickets": 5,
+    "satisfaction": 4.4
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 5612.5,
+    "orders": 68,
+    "tickets": 5,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 6735.0,
+    "orders": 73,
+    "tickets": 5,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 4810.0,
+    "orders": 67,
+    "tickets": 6,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 6012.5,
+    "orders": 72,
+    "tickets": 6,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 7215.0,
+    "orders": 77,
+    "tickets": 6,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 5130.0,
+    "orders": 71,
+    "tickets": 7,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 6412.5,
+    "orders": 76,
+    "tickets": 7,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 7695.0,
+    "orders": 81,
+    "tickets": 7,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 5670.0,
+    "orders": 76,
+    "tickets": 6,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 7087.5,
+    "orders": 81,
+    "tickets": 6,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 8505.0,
+    "orders": 86,
+    "tickets": 6,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 5990.0,
+    "orders": 80,
+    "tickets": 7,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 7487.5,
+    "orders": 85,
+    "tickets": 7,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 8985.0,
+    "orders": 90,
+    "tickets": 7,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 6310.0,
+    "orders": 84,
+    "tickets": 8,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 7887.5,
+    "orders": 89,
+    "tickets": 8,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 9465.0,
+    "orders": 94,
+    "tickets": 8,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 6850.0,
+    "orders": 89,
+    "tickets": 7,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 8562.5,
+    "orders": 94,
+    "tickets": 7,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 10275.0,
+    "orders": 99,
+    "tickets": 7,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 7170.0,
+    "orders": 93,
+    "tickets": 8,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 8962.5,
+    "orders": 98,
+    "tickets": 8,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 10755.0,
+    "orders": 103,
+    "tickets": 8,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 7490.0,
+    "orders": 97,
+    "tickets": 9,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 9362.5,
+    "orders": 102,
+    "tickets": 9,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-03-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 11235.0,
+    "orders": 107,
+    "tickets": 9,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 4920.0,
+    "orders": 70,
+    "tickets": 6,
+    "satisfaction": 4.5
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 6150.0,
+    "orders": 75,
+    "tickets": 6,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 7380.0,
+    "orders": 80,
+    "tickets": 6,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 5240.0,
+    "orders": 74,
+    "tickets": 7,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 6550.0,
+    "orders": 79,
+    "tickets": 7,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 7860.0,
+    "orders": 84,
+    "tickets": 7,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 5560.0,
+    "orders": 78,
+    "tickets": 8,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 6950.0,
+    "orders": 83,
+    "tickets": 8,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 8340.0,
+    "orders": 88,
+    "tickets": 8,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 6100.0,
+    "orders": 83,
+    "tickets": 7,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 7625.0,
+    "orders": 88,
+    "tickets": 7,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 9150.0,
+    "orders": 93,
+    "tickets": 7,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 6420.0,
+    "orders": 87,
+    "tickets": 8,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 8025.0,
+    "orders": 92,
+    "tickets": 8,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 9630.0,
+    "orders": 97,
+    "tickets": 8,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 6740.0,
+    "orders": 91,
+    "tickets": 9,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 8425.0,
+    "orders": 96,
+    "tickets": 9,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 10110.0,
+    "orders": 101,
+    "tickets": 9,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 7280.0,
+    "orders": 96,
+    "tickets": 8,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 9100.0,
+    "orders": 101,
+    "tickets": 8,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 10920.0,
+    "orders": 106,
+    "tickets": 8,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 7600.0,
+    "orders": 100,
+    "tickets": 9,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 9500.0,
+    "orders": 105,
+    "tickets": 9,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 11400.0,
+    "orders": 110,
+    "tickets": 9,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 7920.0,
+    "orders": 104,
+    "tickets": 10,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 9900.0,
+    "orders": 109,
+    "tickets": 10,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-04-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 11880.0,
+    "orders": 114,
+    "tickets": 10,
+    "satisfaction": 4.3
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 5350.0,
+    "orders": 77,
+    "tickets": 7,
+    "satisfaction": 4.6
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 6687.5,
+    "orders": 82,
+    "tickets": 7,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 8025.0,
+    "orders": 87,
+    "tickets": 7,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 5670.0,
+    "orders": 81,
+    "tickets": 8,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 7087.5,
+    "orders": 86,
+    "tickets": 8,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 8505.0,
+    "orders": 91,
+    "tickets": 8,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 5990.0,
+    "orders": 85,
+    "tickets": 9,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 7487.5,
+    "orders": 90,
+    "tickets": 9,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 8985.0,
+    "orders": 95,
+    "tickets": 9,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 6530.0,
+    "orders": 90,
+    "tickets": 8,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 8162.5,
+    "orders": 95,
+    "tickets": 8,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 9795.0,
+    "orders": 100,
+    "tickets": 8,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 6850.0,
+    "orders": 94,
+    "tickets": 9,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 8562.5,
+    "orders": 99,
+    "tickets": 9,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 10275.0,
+    "orders": 104,
+    "tickets": 9,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 7170.0,
+    "orders": 98,
+    "tickets": 10,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 8962.5,
+    "orders": 103,
+    "tickets": 10,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 10755.0,
+    "orders": 108,
+    "tickets": 10,
+    "satisfaction": 4.3
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 7710.0,
+    "orders": 103,
+    "tickets": 9,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 9637.5,
+    "orders": 108,
+    "tickets": 9,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 11565.0,
+    "orders": 113,
+    "tickets": 9,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 8030.0,
+    "orders": 107,
+    "tickets": 10,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 10037.5,
+    "orders": 112,
+    "tickets": 10,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 12045.0,
+    "orders": 117,
+    "tickets": 10,
+    "satisfaction": 4.3
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 8350.0,
+    "orders": 111,
+    "tickets": 11,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 10437.5,
+    "orders": 116,
+    "tickets": 11,
+    "satisfaction": 4.3
+  },
+  {
+    "month": "2026-05-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 12525.0,
+    "orders": 121,
+    "tickets": 11,
+    "satisfaction": 4.4
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 5780.0,
+    "orders": 84,
+    "tickets": 5,
+    "satisfaction": 4.7
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 7225.0,
+    "orders": 89,
+    "tickets": 5,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Organic",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 8670.0,
+    "orders": 94,
+    "tickets": 5,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 6100.0,
+    "orders": 88,
+    "tickets": 6,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 7625.0,
+    "orders": 93,
+    "tickets": 6,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Organic",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 9150.0,
+    "orders": 98,
+    "tickets": 6,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 6420.0,
+    "orders": 92,
+    "tickets": 7,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 8025.0,
+    "orders": 97,
+    "tickets": 7,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Organic",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 9630.0,
+    "orders": 102,
+    "tickets": 7,
+    "satisfaction": 4.3
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 6960.0,
+    "orders": 97,
+    "tickets": 6,
+    "satisfaction": 4.8
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 8700.0,
+    "orders": 102,
+    "tickets": 6,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Referral",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 10440.0,
+    "orders": 107,
+    "tickets": 6,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 7280.0,
+    "orders": 101,
+    "tickets": 7,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 9100.0,
+    "orders": 106,
+    "tickets": 7,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Referral",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 10920.0,
+    "orders": 111,
+    "tickets": 7,
+    "satisfaction": 4.3
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 7600.0,
+    "orders": 105,
+    "tickets": 8,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 9500.0,
+    "orders": 110,
+    "tickets": 8,
+    "satisfaction": 4.3
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Referral",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 11400.0,
+    "orders": 115,
+    "tickets": 8,
+    "satisfaction": 4.4
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Starter",
+    "revenue": 8140.0,
+    "orders": 110,
+    "tickets": 7,
+    "satisfaction": 4.1
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Team",
+    "revenue": 10175.0,
+    "orders": 115,
+    "tickets": 7,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Paid",
+    "region": "Americas",
+    "product": "Business",
+    "revenue": 12210.0,
+    "orders": 120,
+    "tickets": 7,
+    "satisfaction": 4.3
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Starter",
+    "revenue": 8460.0,
+    "orders": 114,
+    "tickets": 8,
+    "satisfaction": 4.2
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Team",
+    "revenue": 10575.0,
+    "orders": 119,
+    "tickets": 8,
+    "satisfaction": 4.3
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Paid",
+    "region": "Europe",
+    "product": "Business",
+    "revenue": 12690.0,
+    "orders": 124,
+    "tickets": 8,
+    "satisfaction": 4.4
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Starter",
+    "revenue": 8780.0,
+    "orders": 118,
+    "tickets": 9,
+    "satisfaction": 4.3
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Team",
+    "revenue": 10975.0,
+    "orders": 123,
+    "tickets": 9,
+    "satisfaction": 4.4
+  },
+  {
+    "month": "2026-06-01",
+    "channel": "Paid",
+    "region": "Asia Pacific",
+    "product": "Business",
+    "revenue": 13170.0,
+    "orders": 128,
+    "tickets": 9,
+    "satisfaction": 4.5
+  }
+]
