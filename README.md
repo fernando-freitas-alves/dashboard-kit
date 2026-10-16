@@ -1,6 +1,6 @@
 # Dashboard Kit
 
-https://github.com/user-attachments/assets/3e0f855d-4312-4db7-9bf8-e1c7114a3f73
+https://github.com/user-attachments/assets/04018041-0ccf-490a-8491-a6b5bcba2d03
 
 Dashboard Kit is a React library for editable dashboards. Users can move and resize charts, create them with AI, and restore previous versions. Connect your own data, permissions, and theme.
 
