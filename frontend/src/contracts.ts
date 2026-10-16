@@ -86,6 +86,11 @@ export type TableColumn = {
   exportGet?: (row: QueryRow) => unknown;
   badge?: boolean;
 };
+export type FieldPresentation = {
+  label?: string;
+  format?: (value: number) => string;
+  axisFormat?: (value: number) => string;
+};
 export interface DashboardOptions {
   /** Stable, non-secret namespace for table preferences; include dataset/version/user. */
   namespace: string;
@@ -110,6 +115,8 @@ export interface DashboardOptions {
     Editor?: ComponentType<EditorProps>;
     empty?: ReactNode;
   };
+  /** Display labels and number formats, resolved from host-owned field metadata. */
+  fieldPresentation?: (spec: ChartSpec, field: string) => FieldPresentation | undefined;
   tableColumns?: (
     spec: ChartSpec,
     rows: QueryRow[],

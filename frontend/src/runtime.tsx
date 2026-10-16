@@ -9,7 +9,7 @@ export function createRuntime(options: DashboardOptions) {
       options.adapter.query,
       options.queryConcurrency ?? 4,
     ),
-    charts: createRenderers(options.palette, options.categoryColors, options.colorScale),
+    charts: createRenderers(options.palette, options.categoryColors, options.colorScale, options.fieldPresentation),
     options,
     adapter: options.adapter,
     events: new EventTarget(),

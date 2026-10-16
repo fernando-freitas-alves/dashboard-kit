@@ -1,3 +1,6 @@
+import type { DashboardOptions } from "../contracts";
+import { fieldPresentation, formatNum } from "./formatting";
+export { formatNum } from "./formatting";
 import { orderedSeries } from "./seriesOrder";
 import { axisText, chartViewport, writeAxisLabel } from "./axisLayout";
 /**
@@ -43,12 +46,6 @@ export function str(v: unknown): string {
   return v == null ? "" : String(v);
 }
 
-export function formatNum(n: number): string {
-  if (Math.abs(n) >= 1000)
-    return n.toLocaleString(undefined, { maximumFractionDigits: 1 });
-  return n.toLocaleString(undefined, { maximumFractionDigits: 2 });
-}
-
 export function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")
@@ -62,6 +59,7 @@ export function createRenderers(
   colors?: string[],
   overrides?: Array<[string, string]>,
   colorScale?: ChartColorScale,
+  presentation?: DashboardOptions["fieldPresentation"],
 ) {
   const { colorFor, otherColor } = colorScale ?? createPalette(colors, overrides);
   function primaryColor(): string {
@@ -219,7 +217,9 @@ export function createRenderers(
     }
   }
 
-  function yAxis(g: D3, y: D3, iw: number) {
+  const field = (spec: ChartSpec, key: string) => fieldPresentation(presentation, spec, key);
+
+  function yAxis(g: D3, y: D3, iw: number, format = formatNum) {
     const D = d3();
     g.append("g")
       .attr("class", "gridl")
@@ -229,7 +229,7 @@ export function createRenderers(
       .call(
         D.axisLeft(y)
           .ticks(5)
-          .tickFormat((v: number) => formatNum(v)),
+          .tickFormat((v: number) => format(v)),
       )
       .call((a: D3) => a.select(".domain").remove());
   }
@@ -261,7 +261,7 @@ export function createRenderers(
     const y = D.scaleLinear()
       .domain([Math.min(0, D.min(vals)), D.max(vals) || 1]).nice();
     const m = { t: text.lineHeight, r: isTime ? 36 : 10, b: 0,
-      l: Math.max(12, ...y.ticks(5).map((v: number) => text.measure(formatNum(v)))) + 14 };
+      l: Math.max(12, ...y.ticks(5).map((v: number) => text.measure(field(spec, yKey).axisFormat(v)))) + 14 };
     const W = Math.max(viewport.W, isTime ? 240 : m.l + m.r + xs.length * 72);
     const iw = W - m.l - m.r;
     const labels = new Map(xs.map(k => [k, text.wrap(k, iw / xs.length - 12)]));
@@ -280,7 +280,7 @@ export function createRenderers(
       .attr("height", H)
       .style("display", "block");
     const g = svg.append("g").attr("transform", `translate(${m.l},${m.t})`);
-    yAxis(g, y, iw);
+    yAxis(g, y, iw, field(spec, yKey).axisFormat);
     const xa = g
       .append("g")
       .attr("class", "axis")
@@ -355,7 +355,7 @@ export function createRenderers(
             isTime ? D.utcFormat("%a, %b %-d %Y")(asDate(best)) : best,
             series
               .filter((s) => at?.has(s.key))
-              .map((s) => [s.label || spec.title, formatNum(at!.get(s.key)!)]),
+              .map((s) => [s.label || field(spec, yKey).label, field(spec, yKey).format(at!.get(s.key)!)]),
           ),
         );
       })
@@ -370,25 +370,25 @@ export function createRenderers(
     const D = d3();
     const labelKey = spec.mapping.label || spec.mapping.x || "label";
     const valueKey = spec.mapping.value || spec.mapping.y || "value";
-    const { W } = chartViewport(el);
+    const { W, H } = chartViewport(el);
     const text = axisText(el);
     const data = rows
       .map((r) => ({ label: str(r[labelKey]) || "(blank)", value: num(r[valueKey]), row: r }))
       .sort((a, b) => b.value - a.value);
     const labelW = Math.min(W * 0.4, Math.max(...data.map(d => text.measure(d.label))) + 12);
     const labels = data.map(d => text.wrap(d.label, Math.max(24, labelW - 12)));
-    const rowHeight = Math.max(26, ...labels.map(l => l.height + 10));
-    const valueW = Math.max(...data.map(d => text.measure(formatNum(d.value)))) + 12;
+    const rowHeight = Math.max(26, ...labels.map(l => l.height + 10), Math.min(48, (H - 12) / Math.max(1, data.length)));
+    const valueW = Math.max(...data.map(d => text.measure(field(spec, valueKey).format(d.value)))) + 12;
     const m = { t: 6, r: valueW, b: 6, l: labelW };
     const width = Math.max(W, m.l + m.r + 80);
     const iw = width - m.l - m.r;
     const ih = data.length * rowHeight;
     const y = D.scaleBand().domain(data.map((_, i) => i)).range([0, ih]).padding(0.22);
     const x = D.scaleLinear().domain([0, D.max(data, (d: { value: number }) => d.value) || 1]).range([0, iw]);
-    const color = (d: { row: Row }) =>
+    const color = (d: { label: string; row: Row }) =>
       spec.mapping.series
         ? categoryColor(spec.mapping.series, str(d.row[spec.mapping.series]))
-        : primaryColor();
+        : categoryColor(labelKey, d.label);
     const total = D.sum(rows, (r: Row) => num(r[valueKey])) || 1;
 
     const svg = D.select(el)
@@ -422,7 +422,7 @@ export function createRenderers(
       .attr("y", y.bandwidth() / 2)
       .attr("dy", "0.35em")
       .style("font-weight", 600)
-      .text((d: { value: number }) => formatNum(d.value));
+      .text((d: { value: number }) => field(spec, valueKey).format(d.value));
     rowG
       .append("rect")
       .attr("x", -m.l)
@@ -433,7 +433,7 @@ export function createRenderers(
         showTip(
           ev,
           tip(d.label, [
-            [valueKey, formatNum(d.value)],
+            [field(spec, valueKey).label, field(spec, valueKey).format(d.value)],
             ["Share", `${((d.value / total) * 100).toFixed(1)}%`],
           ]),
         ),
@@ -461,13 +461,13 @@ export function createRenderers(
     const yv = rows.map((r) => num(r[yKey]));
     const x = D.scaleLinear().domain([Math.min(0, D.min(xv)), D.max(xv) || 1]).nice();
     const y = D.scaleLinear().domain([Math.min(0, D.min(yv)), D.max(yv) || 1]).nice();
-    const xTickW = Math.max(...x.ticks(5).map((v: number) => text.measure(formatNum(v))));
+    const xTickW = Math.max(...x.ticks(5).map((v: number) => text.measure(field(spec, xKey).axisFormat(v))));
     const m = { t: text.lineHeight, r: xTickW / 2 + 8, b: 0,
-      l: Math.max(xTickW / 2, ...y.ticks(5).map((v: number) => text.measure(formatNum(v)))) + 14 };
+      l: Math.max(xTickW / 2, ...y.ticks(5).map((v: number) => text.measure(field(spec, yKey).axisFormat(v)))) + 14 };
     const W = Math.max(viewport.W, m.l + m.r + 100);
     const iw = W - m.l - m.r;
-    const xTitle = text.wrap(xKey, iw);
-    const yTitle = text.wrap(yKey, iw);
+    const xTitle = text.wrap(field(spec, xKey).label, iw);
+    const yTitle = text.wrap(field(spec, yKey).label, iw);
     m.t += yTitle.height + 4;
     m.b = text.lineHeight + xTitle.height + 20;
     const H = Math.max(viewport.H, m.t + m.b + 80);
@@ -485,14 +485,14 @@ export function createRenderers(
       .attr("height", H)
       .style("display", "block");
     const g = svg.append("g").attr("transform", `translate(${m.l},${m.t})`);
-    yAxis(g, y, iw);
+    yAxis(g, y, iw, field(spec, yKey).axisFormat);
     g.append("g")
       .attr("class", "axis")
       .attr("transform", `translate(0,${ih})`)
       .call(
         D.axisBottom(x)
           .ticks(Math.max(1, Math.floor(iw / Math.max(80, xTickW + 16))))
-          .tickFormat((v: number) => formatNum(v)),
+          .tickFormat((v: number) => field(spec, xKey).axisFormat(v)),
       );
     writeAxisLabel(g.append("text").attr("text-anchor", "end").node(), xTitle,
       text.lineHeight, iw, ih + text.lineHeight + text.size + 12);
@@ -513,10 +513,10 @@ export function createRenderers(
         .attr("stroke", s.color)
         .on("mousemove", (ev: MouseEvent, row: Row) => {
           const lines: [string, string][] = [
-            [xKey, formatNum(num(row[xKey]))],
-            [yKey, formatNum(num(row[yKey]))],
+            [field(spec, xKey).label, field(spec, xKey).format(num(row[xKey]))],
+            [field(spec, yKey).label, field(spec, yKey).format(num(row[yKey]))],
           ];
-          if (sizeKey) lines.push([sizeKey, formatNum(num(row[sizeKey]))]);
+          if (sizeKey) lines.push([field(spec, sizeKey).label, field(spec, sizeKey).format(num(row[sizeKey]))]);
           showTip(
             ev,
             tip(labelKey ? str(row[labelKey]) : s.label || spec.title, lines),
@@ -571,7 +571,7 @@ export function createRenderers(
         showTip(
           ev,
           tip(`${str(r[yKey])} · ${str(r[xKey])}`, [
-            [valueKey, formatNum(num(r[valueKey]))],
+            [field(spec, valueKey).label, field(spec, valueKey).format(num(r[valueKey]))],
           ]),
         ),
       )
@@ -653,7 +653,7 @@ export function createRenderers(
             ...(groupKey
               ? ([[groupKey, d.data.group]] as [string, string][])
               : []),
-            [valueKey, formatNum(d.value)],
+            [field(spec, valueKey).label, field(spec, valueKey).format(d.value)],
             ["Share", `${((d.value / total) * 100).toFixed(1)}%`],
           ]),
         ),
@@ -676,7 +676,7 @@ export function createRenderers(
       .attr("class", "aie-treemap-v")
       .attr("x", 6)
       .attr("y", 29)
-      .text((d: D3) => formatNum(d.value));
+      .text((d: D3) => field(spec, valueKey).format(d.value));
   }
 
   /**
@@ -740,8 +740,8 @@ export function createRenderers(
     const key = document.createElement("div");
     key.className = "aie-map-key";
     key.innerHTML = bubbles
-      ? `<span class="aie-muted">Dot size = ${escapeHtml(valueKey)}</span>`
-      : `<span>${formatNum(Math.min(0, lo))}</span><i style="background:linear-gradient(90deg,${color(Math.min(0, lo))},${color(hi)})"></i><span>${formatNum(hi)}</span>` +
+      ? `<span class="aie-muted">Dot size = ${escapeHtml(field(spec, valueKey).label)}</span>`
+      : `<span>${escapeHtml(field(spec, valueKey).format(Math.min(0, lo)))}</span><i style="background:linear-gradient(90deg,${color(Math.min(0, lo))},${color(hi)})"></i><span>${escapeHtml(field(spec, valueKey).format(hi))}</span>` +
         (unmatched
           ? `<span class="aie-muted" title="Values that didn’t match a ${scope === "usa" ? "US state" : "country"}">· ${unmatched} unmatched</span>`
           : "");
@@ -774,7 +774,7 @@ export function createRenderers(
         showTip(
           ev,
           tip(f.properties.name, [
-            [valueKey, v == null ? "No data" : formatNum(v)],
+            [field(spec, valueKey).label, v == null ? "No data" : field(spec, valueKey).format(v)],
           ]),
         );
       })
@@ -809,7 +809,7 @@ export function createRenderers(
               m.label
                 ? str(d.row[m.label])
                 : `${num(d.row[m.lat!]).toFixed(2)}, ${num(d.row[m.lon!]).toFixed(2)}`,
-              [[valueKey, formatNum(num(d.row[valueKey]))]],
+              [[field(spec, valueKey).label, field(spec, valueKey).format(num(d.row[valueKey]))]],
             ),
           ),
         )

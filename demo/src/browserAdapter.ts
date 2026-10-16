@@ -1,17 +1,18 @@
-import type { BoardDocument, BoardRecord, ChartSpec, DashboardAdapter, WorkspaceData } from '@loadsmart/dashboard-kit';
+import type { BoardDocument, BoardRecord, ChartSpec, DashboardAdapter, Period, WorkspaceData } from '@loadsmart/dashboard-kit';
 import rows from '../data/sales.json';
 
 export const STORAGE_KEY = 'dashboard-kit-playground:v1';
 export const starters = [
-  { id: 'trend', title: 'Show monthly revenue as a line chart' },
+  { id: 'trend', title: 'Explore revenue trends by channel' },
   { id: 'channel', title: 'Compare orders by channel' },
   { id: 'region', title: 'Show revenue by region' },
+  { id: 'map', title: 'Map revenue by country' },
 ];
 const metrics = ['revenue', 'orders', 'tickets', 'satisfaction'] as const;
-const groups = ['month', 'channel', 'region', 'product', 'none'] as const;
-const kinds = ['bar', 'area', 'line', 'hbar', 'donut', 'kpi', 'table'];
-type Metric = typeof metrics[number];
-type Group = typeof groups[number];
+export const groups = ['date', 'month', 'channel', 'region', 'country', 'product', 'none'] as const;
+export const kinds = ['bar', 'area', 'line', 'hbar', 'donut', 'map', 'kpi', 'table'];
+export type Metric = typeof metrics[number];
+export type Group = typeof groups[number];
 type Storage = Pick<globalThis.Storage, 'getItem' | 'setItem'>;
 type State = { v: 1; boards: BoardRecord[]; archived: BoardRecord[]; preferences: WorkspaceData['preferences'] };
 
@@ -27,41 +28,69 @@ function number(value: unknown): number {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) throw Error('Invalid dashboard number.');
   return value;
 }
-export function parseQuery(query: string): { metric: Metric; group: Group } {
+export function parseQuery(query: string): { metric: Metric; group: Group; series?: Group; period?: { from: number; to: number } } {
   try {
     if (typeof query !== 'string' || query.length > 500) throw Error();
     const q = object(JSON.parse(query));
-    if (Object.keys(q).sort().join(',') !== 'group,metric' || !metrics.includes(q.metric) || !groups.includes(q.group)) throw Error();
-    return { metric: q.metric, group: q.group };
+    if (Object.keys(q).some(k => !['metric', 'group', 'series', 'period'].includes(k)) || !metrics.includes(q.metric) || !groups.includes(q.group)) throw Error();
+    if ('series' in q && (!groups.includes(q.series) || q.series === 'none' || q.group === 'none' || q.series === q.group)) throw Error();
+    if ('period' in q) {
+      const p = object(q.period);
+      if (Object.keys(p).sort().join(',') !== 'from,to' || !Number.isInteger(p.from) || !Number.isInteger(p.to) || p.from < 0 || p.to > 100000 || p.from >= p.to) throw Error();
+    }
+    return { metric: q.metric, group: q.group, ...(q.series ? { series: q.series } : {}), ...(q.period ? { period: { from: q.period.from, to: q.period.to } } : {}) };
   } catch { throw Error('Choose a supported measure and grouping.'); }
 }
+export function applyDemoFilters(query: string, { period }: { period: Period | null }) {
+  const base = parseQuery(query);
+  return JSON.stringify({ ...base, ...(period ? { period: { from: period.from, to: period.to } } : {}) });
+}
 export function queryRows(query: string) {
-  const { metric, group } = parseQuery(query);
-  const buckets = new Map<string, number[]>();
+  const { metric, group, series, period } = parseQuery(query);
+  const buckets = new Map<string, { label: string; series?: string; values: number[] }>();
   for (const row of rows) {
+    const day = Date.parse(`${row.date}T00:00:00Z`) / 86400000;
+    if (period && (day < period.from || day >= period.to)) continue;
     const label = group === 'none' ? 'Total' : row[group];
-    const values = buckets.get(label) || [];
-    values.push(row[metric]);
-    buckets.set(label, values);
+    const seriesLabel = series && series !== 'none' ? row[series] : undefined;
+    const key = JSON.stringify([label, seriesLabel]);
+    const bucket = buckets.get(key) ?? { label, ...(seriesLabel ? { series: seriesLabel } : {}), values: [] };
+    bucket.values.push(row[metric]);
+    buckets.set(key, bucket);
   }
-  return [...buckets].sort(([a], [b]) => a.localeCompare(b)).map(([label, values]) => ({
-    label, value: Math.round(values.reduce((a, b) => a + b, 0) / (metric === 'satisfaction' ? values.length : 1) * 100) / 100,
+  return [...buckets.values()].sort((a, b) => a.label.localeCompare(b.label) || (a.series ?? '').localeCompare(b.series ?? '')).map(({ values, ...dimensions }) => ({
+    ...dimensions, value: Math.round(values.reduce((a, b) => a + b, 0) / (metric === 'satisfaction' ? values.length : 1) * 100) / 100,
   }));
 }
-function chart(title: string, kind: ChartSpec['kind'], metric: Metric, group: Group, id: string = crypto.randomUUID()): ChartSpec {
-  return { id, title, prompt: title, kind, query: JSON.stringify({ metric, group }), mapping: { x: 'label', y: 'value', label: 'label', value: 'value' }, status: 'ready', createdAt: Date.now(), updatedAt: Date.now(), version: 1 };
+export function chartMapping(kind: ChartSpec['kind'], series?: Group, group?: Group): ChartSpec['mapping'] {
+  return kind === 'map'
+    ? { region: 'label', value: 'value', scope: 'world' }
+    : { x: 'label', y: 'value', label: 'label', value: 'value', ...(series ? { series: 'series' } : {}), ...(kind === 'area' ? { stacked: false } : {}), ...(['date', 'month'].includes(group ?? '') ? { timeUnit: group === 'month' ? 'month' : 'day' } as const : {}) };
+}
+function chart(title: string, kind: ChartSpec['kind'], metric: Metric, group: Group, id: string = crypto.randomUUID(), series?: Group): ChartSpec {
+  if (kind === 'map') { group = 'country'; series = undefined; }
+  return { id, title, prompt: title, kind, query: JSON.stringify({ metric, group, ...(series ? { series } : {}) }), mapping: chartMapping(kind, series, group), status: 'ready', createdAt: Date.now(), updatedAt: Date.now(), version: 1 };
 }
 export function defaultBoard(): BoardDocument {
-  const widgets = [chart('Revenue', 'kpi', 'revenue', 'none', 'revenue'), chart('Orders', 'kpi', 'orders', 'none', 'orders'), chart('Customer satisfaction', 'kpi', 'satisfaction', 'none', 'satisfaction'), chart('Revenue over time', 'bar', 'revenue', 'month', 'trend'), chart('Revenue by channel', 'donut', 'revenue', 'channel', 'channels')];
-  const sizes = [[0, 0, 4, 4], [4, 0, 4, 4], [8, 0, 4, 4], [0, 4, 8, 8], [8, 4, 4, 8]];
+  const widgets = [
+    chart('Revenue', 'kpi', 'revenue', 'none', 'revenue'),
+    chart('Orders', 'kpi', 'orders', 'none', 'orders'),
+    chart('Customer satisfaction', 'kpi', 'satisfaction', 'none', 'satisfaction'),
+    chart('Revenue by channel over time', 'area', 'revenue', 'date', 'trend', 'channel'),
+    chart('Revenue by channel', 'donut', 'revenue', 'channel', 'channels'),
+    chart('Revenue by region', 'hbar', 'revenue', 'region', 'regions'),
+    chart('Revenue by country', 'map', 'revenue', 'country', 'countries'),
+  ];
+  const sizes = [[0, 0, 4, 4], [4, 0, 4, 4], [8, 0, 4, 4], [0, 4, 8, 8], [8, 4, 4, 8], [0, 12, 6, 10], [6, 12, 6, 10]];
   return { v: 2, name: 'Sales overview', widgets, layouts: widgets.map((w, i) => ({ i: w.id, x: sizes[i][0], y: sizes[i][1], w: sizes[i][2], h: sizes[i][3] })), locked: false, updatedAt: Date.now() };
 }
 function revision(raw: unknown): NonNullable<ChartSpec['history']>[number] {
   const r = object(raw);
   if (!kinds.includes(r.kind)) throw Error('Unsupported chart type for this demo.');
-  parseQuery(r.query);
-  const mapping = object(r.mapping);
-  if (Object.entries(mapping).some(([k, v]) => !['x', 'y', 'label', 'value'].includes(k) || !['label', 'value'].includes(v as string))) throw Error('Invalid chart fields.');
+  const query = parseQuery(r.query);
+  const mapping = { ...object(r.mapping) };
+  if (Object.entries(mapping).some(([k, v]) => k === 'scope' ? v !== 'world' : k === 'stacked' ? typeof v !== 'boolean' : k === 'timeUnit' ? !['day', 'week', 'month'].includes(v as string) : !['x', 'y', 'label', 'value', 'series', 'region'].includes(k) || !['label', 'value', 'series'].includes(v as string))) throw Error('Invalid chart fields.');
+  if (!mapping.timeUnit && ['bar', 'area', 'line'].includes(r.kind) && query.group === 'month') mapping.timeUnit = 'month';
   return { title: text(r.title, 160), prompt: text(r.prompt || '', 2000, true), kind: r.kind, query: r.query, mapping: { ...mapping }, updatedAt: number(r.updatedAt), version: number(r.version ?? 1) };
 }
 function validateChart(raw: unknown): ChartSpec {
@@ -114,6 +143,7 @@ export function createBrowserAdapter(storage: Storage = localStorage): Dashboard
     return record;
   }
   return {
+    applyFilters: applyDemoFilters,
     async loadWorkspace() { const s = read(); return { ...s, default: defaultBoard(), ai: false }; },
     async createBoard(definition) {
       const s = read();
@@ -135,10 +165,10 @@ export function createBrowserAdapter(storage: Storage = localStorage): Dashboard
     async compose(input, signal) {
       signal.throwIfAborted();
       const recipe = input.recipe || starters.find(s => s.title.toLowerCase() === input.prompt.trim().toLowerCase())?.id;
-      const specs = { trend: ['Monthly revenue', 'line', 'revenue', 'month'], channel: ['Orders by channel', 'bar', 'orders', 'channel'], region: ['Revenue by region', 'hbar', 'revenue', 'region'] } as const;
+      const specs = { trend: ['Revenue by channel over time', 'area', 'revenue', 'date'], channel: ['Orders by channel', 'bar', 'orders', 'channel'], region: ['Revenue by region', 'hbar', 'revenue', 'region'], map: ['Revenue by country', 'map', 'revenue', 'country'] } as const;
       const spec = specs[recipe as keyof typeof specs];
       if (!spec) throw Error('Live AI requires the Python demo. Pick a starter or use Choose fields here.');
-      const widget = chart(spec[0], spec[1], spec[2], spec[3], input.current?.id);
+      const widget = chart(spec[0], spec[1], spec[2], spec[3], input.current?.id, recipe === 'trend' ? 'channel' : undefined);
       widget.prompt = input.prompt;
       widget.trace = { source: 'recipe', prompt: input.prompt, status: 'done', startedAt: Date.now(), finishedAt: Date.now(), steps: [{ type: 'text', text: 'Created from a fixed starter using fictional data. No AI service was called.' }] };
       return { widget };

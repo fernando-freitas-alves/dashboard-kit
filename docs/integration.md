@@ -47,6 +47,14 @@ The adapter loads the workspace, creates/saves/archives boards, stores preferenc
 
 Sharing requires a host `share` callback and server access rules. `features.sharing = false` hides its UI. The kit does not create public links or decide which rows are safe to share. Supply pre-authorized, filtered results to the `shared` prop for read-only rendering.
 
+## Date filtering
+
+Dragging across an ISO date axis on a line, area, or bar chart sets the dashboard period. The date chip clears it. `mapping.timeUnit` defines each bucket as `day` (default), `week`, or `month`.
+
+Implement `adapter.applyFilters(query, { period })` to apply that period to every query. `period.from` is inclusive and `period.to` is exclusive, both UTC days since January 1, 1970. The kit retains the saved query and caches each filtered query separately. Without this adapter hook, selecting dates cannot filter your data.
+
+The [browser demo adapter](../demo/src/browserAdapter.ts) and [Python data adapter](../demo/server/data.py) show the complete flow: add a validated `{ from, to }` period to the query, filter rows by date, then aggregate. With `createHttpAdapter`, add the same `applyFilters` hook to the returned adapter.
+
 ## Python backend
 
 Install the local package with `pip install './python[flask]'`. `DashboardService` joins three host decisions:
@@ -59,7 +67,7 @@ Install the local package with `pip install './python[flask]'`. `DashboardServic
 
 The kit validates document structure, sizes, unique IDs, and revisions. Your data adapter must validate query semantics, every retained chart version, result limits, and the allowed dataset. Treat imported boards and AI output as untrusted. Do not execute arbitrary SQL, HTML, JavaScript, or URLs from them.
 
-The demo uses a bounded JSON query vocabulary (`metric`, `group`) over fictional rows. It accepts empty draft charts but rejects queries hidden inside them. Its loopback binding, host/origin checks, CSRF protection, 512 KiB request limit, and six AI requests per minute are demo defaults. Before exposing a server, supply authentication, tenant permissions, HTTPS, secure cookies, durable secrets, operational limits, logging, and a production WSGI server.
+The demo uses a bounded JSON query vocabulary (`metric`, `group`, optional `series` and `period`) over fictional rows. It accepts empty draft charts but rejects queries hidden inside them. Its loopback binding, host/origin checks, CSRF protection, 512 KiB request limit, and six AI requests per minute are demo defaults. Before exposing a server, supply authentication, tenant permissions, HTTPS, secure cookies, durable secrets, operational limits, logging, and a production WSGI server.
 
 ## AI
 
@@ -72,6 +80,17 @@ The Python OpenAI transport uses the Responses API with structured output and `s
 Import the kit stylesheet once, then apply your overrides. Set `--dashboard-*` CSS variables on `.ldk-surface` and `.ldk-popover` for colors, borders, typography, and overlays. The [demo stylesheet](../demo/src/style.css) includes light and dark themes for charts, tooltips, and dialogs.
 
 Use `slots.Editor` for a custom chart builder, `slots.Toolbar` for filters, and `renderers` to replace a built-in chart. See [contracts.ts](../frontend/src/contracts.ts) for the option and adapter types.
+
+Use `fieldPresentation` to give result fields readable labels and units across cards, axes, tooltips, tables, and maps. Resolve fields from your dataset or validated query metadata; numeric values remain unchanged for sorting and export.
+
+```ts
+const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+const compactUsd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact' });
+const fieldPresentation = (spec, field) => field === 'revenue'
+  ? { label: 'Revenue', format: usd.format, axisFormat: compactUsd.format }
+  : undefined;
+// Include fieldPresentation in DashboardOptions.
+```
 
 A custom renderer receives a container, chart specification, and rows. Return cleanup logic for subscriptions or observers. Render text safely; don't interpolate untrusted labels into HTML. Table columns and cell actions are configurable without replacing the whole chart.
 

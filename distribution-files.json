@@ -21,6 +21,7 @@
   "frontend/dist/types/src/board/axisLayout.d.ts",
   "frontend/dist/types/src/board/chartHistory.d.ts",
   "frontend/dist/types/src/board/d3Charts.d.ts",
+  "frontend/dist/types/src/board/formatting.d.ts",
   "frontend/dist/types/src/board/friendlyError.d.ts",
   "frontend/dist/types/src/board/geo.d.ts",
   "frontend/dist/types/src/board/geoAssets.d.ts",

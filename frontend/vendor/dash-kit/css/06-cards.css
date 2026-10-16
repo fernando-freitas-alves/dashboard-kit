@@ -203,16 +203,20 @@
 
 .ldk-surface .donut-legend {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px 10px;
-  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: max-content;
+  max-width: 100%;
+  margin-inline: auto;
+  text-align: left;
   font-size: 11px;
   color: var(--text-2)
 }
 
 .ldk-surface .donut-legend .lg {
-  max-width: none;
+  max-width: 100%;
+  box-sizing: border-box;
   margin: 0;
   gap: 6px
 }

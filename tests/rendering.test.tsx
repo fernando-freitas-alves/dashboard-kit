@@ -171,6 +171,33 @@ for (const kind of [
       }
     },
   );
+test("donut centers only the full total and shrinks long totals as the card narrows", async () => {
+  const { donut } = await import("../frontend/vendor/dash-kit/js/charts.js");
+  const widths = [160, 320, 600];
+  const sizes: number[] = [];
+  for (const width of widths) {
+    const el = document.createElement("div");
+    Object.defineProperty(el, "clientWidth", { value: width });
+    document.body.append(el);
+    try {
+      donut(el, {
+        items: [{ key: "revenue", label: "Revenue", value: 1256512.5, color: "#5b5bd6" }],
+        centerLabel: "This redundant label must not appear",
+        onClick() {},
+      });
+      const text = el.querySelector(".donut-value") as SVGTextElement;
+      assert.equal(text.textContent, "1,256,512.5");
+      assert.equal(text.getAttribute("aria-label"), "Total: 1,256,512.5");
+      assert.equal(text.parentElement!.querySelectorAll(":scope > text").length, 1);
+      assert.doesNotMatch(el.textContent!, /redundant label/);
+      assert.equal(text.getAttribute("dominant-baseline"), "central");
+      sizes.push(parseFloat(text.style.fontSize));
+    } finally { el.remove(); }
+  }
+  assert.ok(sizes[0] < sizes[1], "narrow cards shrink the full number instead of clipping it");
+  assert.ok(sizes[1] <= sizes[2]);
+});
+
 test("host chart colors reach categorical and single-series renderers without changing other workspaces", async () => {
   const colorScale = {
     colorFor: (_namespace: string, key: string) => key === "Usually" ? "#DC3912" : "#3366CC",
@@ -199,6 +226,21 @@ test("host chart colors reach categorical and single-series renderers without ch
     await forms.close();
   }
 });
+test("horizontal bars color categories consistently and honor host overrides", async () => {
+  const item = await mount("hbar", { palette: ["#5b5bd6", "#11a78f"], categoryColors: [["Alex", "#f59e0b"]] }, {
+    spec: { id: "categories", title: "Categories", prompt: "", query: "fixture", kind: "hbar", status: "ready",
+      mapping: { label: "label", value: "value" }, createdAt: 0, updatedAt: 0 },
+  });
+  try {
+    const bars = [...item.el.querySelectorAll(".aie-tile-chart svg rect")].filter(node => node.getAttribute("fill") !== "transparent");
+    assert.equal(bars.length, 3);
+    const byLabel = bars.map(node => ({ label: node.parentElement!.querySelector(".axis-label")?.textContent, color: node.getAttribute("fill") }));
+    assert.ok(byLabel.filter(bar => bar.label === "Alex").every(bar => bar.color === "#f59e0b"));
+    assert.equal(new Set(byLabel.map(bar => bar.color)).size, 2);
+    assert.equal(byLabel.find(bar => bar.label === "Blair")?.color, "#5b5bd6");
+  } finally { await item.close(); }
+});
+
 test("table permissions hide CSV, preserve host cell action and search rows", async () => {
   let selected = "";
   const item = await mount("table", {
@@ -324,6 +366,62 @@ test("dense time axes keep a bounded plot with fewer complete ticks", () => {
   el.remove();
 });
 
+for (const kind of ['bar', 'area', 'line']) test(`${kind} date charts brush whole months and support cancel and keyboard clear`, async () => {
+  const points = ['2026-01-01', '2026-02-01', '2026-03-01'].map((label, i) => ({ label, value: [10, 30, 20][i] }));
+  const day = (iso: string) => Date.parse(iso + 'T00:00:00Z') / 86400000;
+  const selected: number[][] = [];
+  const period = { from: day('2026-01-01'), to: day('2026-04-01'), label: 'First quarter' };
+  const item = await mount(kind, { adapter: { query: async () => points } }, {
+    spec: { id: 'dates', title: 'Revenue', prompt: 'Revenue', kind, query: 'dates', status: 'ready', createdAt: 1, updatedAt: 1,
+      mapping: { x: 'label', y: 'value', timeUnit: 'month' } },
+    period, onSetPeriod: (from: number, to: number) => selected.push([from, to]),
+  });
+  try {
+    const svg = item.el.querySelector('.aie-tile-chart svg')!;
+    (svg as any).createSVGPoint = () => ({ x: 0, y: 0, matrixTransform() { return { x: this.x, y: this.y }; } });
+    const group = svg.querySelector('g')!;
+    (group as any).getScreenCTM = () => ({ inverse: () => ({}) });
+    const buckets = [...svg.querySelectorAll<SVGRectElement>('.bk .bg')];
+    assert.equal(buckets.length, 3);
+    const center = (i: number) => Number(buckets[i].getAttribute('x')) + Number(buckets[i].getAttribute('width')) / 2;
+    const pointer = (target: Element, type: string, x: number) => {
+      const event = new MouseEvent(type, { bubbles: true, button: 0, clientX: x, clientY: 40 });
+      Object.defineProperty(event, 'pointerId', { value: 1 });
+      target.dispatchEvent(event);
+    };
+    assert.match(item.el.textContent!, /Drag to filter dashboard/);
+    if (kind === 'line') assert.equal(svg.querySelectorAll('.series-line').length, 1);
+    await React.act(async () => {
+      // Start on the mark, which must not swallow the brush gesture.
+      pointer(svg.querySelector('rect.seg') ?? buckets[2], 'pointerdown', center(2));
+      pointer(svg, 'pointermove', center(0));
+      pointer(svg, 'pointerup', center(0));
+    });
+    assert.deepEqual(selected, [[day('2026-01-01'), day('2026-04-01')]]);
+    await React.act(() => {
+      pointer(buckets[0], 'pointerdown', center(0));
+      pointer(svg, 'pointermove', center(1));
+      pointer(svg, 'pointercancel', center(1));
+    });
+    assert.equal(selected.length, 1, 'cancel must not commit a selection');
+    const clear = svg.querySelector('[aria-label="Clear date range"]')!;
+    assert.equal(clear.getAttribute('tabindex'), '0');
+    await React.act(() => clear.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
+    assert.deepEqual(selected[1], [period.from, period.to], 'clear toggles off the committed period');
+  } finally { await item.close(); }
+});
+
+test('unstacked timelines keep negative values within the plot', () => {
+  const el = document.createElement('div'); document.body.append(el);
+  try {
+    barChart(el, { mode: 'line', stacked: false,
+      buckets: [{ key: 'first', label: 'First', from: 1, to: 2 }, { key: 'second', label: 'Second', from: 2, to: 3 }],
+      series: [{ key: 'profit', label: 'Profit', color: 'blue' }], val: (i: number) => [-20, 30][i] });
+    assert.match(el.querySelector('.axis')!.textContent!, /[−-]20/);
+    assert.ok(el.querySelector('.series-line')!.getAttribute('d'));
+  } finally { el.remove(); }
+});
+
 for (const kind of ["line", "hbar", "heatmap"]) test(`${kind} preserves complete categorical labels`, () => {
   const el = document.createElement("div");
   document.body.append(el);
@@ -377,4 +475,53 @@ test("duplicate legacy snapshot does not offer a misleading rollback", async () 
     assert.equal(item.el.querySelector('.aie-tile-revert'), null);
     assert.ok(item.el.querySelector('[aria-label="Chart version 1. View history"]'));
   } finally { await item.close(); }
+});
+
+test('host field labels and currency formats reach cards, charts and tables', async () => {
+  const fieldPresentation = (_spec: unknown, field: string) => field === 'value'
+    ? { label: 'Revenue', format: (n: number) => `$${n.toFixed(2)}`, axisFormat: (n: number) => `$${n}` }
+    : { label: field === 'label' ? 'Region' : field };
+  for (const kind of ['kpi', 'table', 'donut', 'hbar', 'line', 'bar', 'area', 'treemap']) {
+    const item = await mount(kind, { fieldPresentation });
+    try {
+      const content = item.el.querySelector('.aie-tile-chart')!;
+      assert.match(content.textContent!, /\$/, kind);
+      if (kind === 'kpi') assert.equal(content.querySelector('.aie-kpi-v')?.textContent, '$2.00');
+      if (kind === 'table') {
+        assert.match(content.textContent!, /Revenue/);
+        assert.match(content.textContent!, /Region/);
+        assert.match(content.textContent!, /\$5\.00/);
+      }
+      if (kind === 'donut') {
+        assert.equal(content.querySelector('.donut-value')?.textContent, '$10.00');
+        assert.equal(content.querySelector('.lg-label[role="button"]'), null, 'no fake filtering action');
+      }
+      const hover = kind === 'hbar' ? content.querySelector('rect[fill="transparent"]')
+        : kind === 'donut' ? content.querySelector('.pie-slice') : null;
+      if (hover) {
+        hover.dispatchEvent(new MouseEvent('mousemove', { bubbles: true, clientX: 10, clientY: 10 }));
+        const tip = document.getElementById('ldk-tip')!;
+        assert.match(tip.textContent!, /Revenue/);
+        assert.match(tip.textContent!, /\$\d+\.00/);
+        assert.doesNotMatch(tip.textContent!, /Click to filter|value/);
+      }
+    } finally { await item.close(); }
+  }
+});
+
+test('host-formatted values remain text, including KPI and donut tooltip HTML', async () => {
+  for (const kind of ['kpi', 'donut', 'hbar']) {
+    const item = await mount(kind, { fieldPresentation: () => ({ label: '<img src=x>', format: () => '<img src=x onerror=alert(1)>' }) });
+    try {
+      const chart = item.el.querySelector('.aie-tile-chart')!;
+      assert.equal(chart.querySelector('img'), null);
+      assert.match(chart.textContent!, /<img src=x/);
+      const hover = kind === 'hbar' ? chart.querySelector('rect[fill="transparent"]') : chart.querySelector('.pie-slice');
+      if (hover) {
+        hover.dispatchEvent(new MouseEvent('mousemove', { bubbles: true }));
+        assert.equal(document.getElementById('ldk-tip')!.querySelector('img'), null);
+        assert.match(document.getElementById('ldk-tip')!.textContent!, /<img src=x/);
+      }
+    } finally { await item.close(); }
+  }
 });

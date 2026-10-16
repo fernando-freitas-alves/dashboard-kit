@@ -10,8 +10,8 @@ export type BoardLayout = {
 };
 
 /**
- * Chart kinds the agent may pick. `bar`/`area` go through dash-kit's bar
- * chart (brushable dates); the d3 kinds live in `d3Charts.ts`. Hosts validate supported kinds in their data adapter.
+ * Chart kinds the agent may pick. `bar`/`area` and date-based `line` charts share
+ * the brushable timeline renderer; the d3 kinds live in `d3Charts.ts`. Hosts validate supported kinds in their data adapter.
  */
 export type ChartKind =
   | "bar"
@@ -55,6 +55,8 @@ export type ChartSpec = {
   /** Column names the renderer expects from definition rows (plus a few display options). */
   mapping: {
     x?: string;
+    /** Width of each ISO date bucket, used for dashboard-wide range selection. */
+    timeUnit?: "day" | "week" | "month";
     y?: string;
     /** Splits rows into coloured series (bar/area/line/scatter) or groups (treemap). */
     series?: string;

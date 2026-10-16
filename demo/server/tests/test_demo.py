@@ -77,3 +77,71 @@ def test_empty_draft_saves_and_invalid_draft_cannot_execute(client):
 @pytest.mark.parametrize('query',['{"metric":[],"group":"month"}','{"metric":"revenue","group":{}}'])
 def test_invalid_query_types_are_validation_errors(client,query):
     assert client.post('/api/dashboards/query',json={'query':query},headers=headers(client)).status_code==422
+
+
+def test_region_breakdown_preserves_demo_totals(client):
+    h = headers(client)
+    regions = client.post('/api/dashboards/query', json={'query': query_spec('revenue', 'region')}, headers=h).json
+    total = client.post('/api/dashboards/query', json={'query': query_spec('revenue', 'none')}, headers=h).json
+    assert len(regions['rows']) == 9
+    assert round(sum(row['value'] for row in regions['rows']), 2) == total['rows'][0]['value']
+
+
+def test_showcase_series_and_map_roundtrip(client):
+    h = headers(client)
+    board = client.get('/api/dashboards/workspace').json['default']
+    trend = next(w for w in board['widgets'] if w['id'] == 'trend')
+    assert trend['kind'] == 'area' and trend['mapping']['series'] == 'series'
+    series = client.post('/api/dashboards/query', json={'query': trend['query']}, headers=h).json['rows']
+    assert len(series) == 72
+    assert {r['series'] for r in series} == {'Organic', 'Paid', 'Referral'}
+    monthly = client.post('/api/dashboards/query', json={'query': query_spec('revenue','month')}, headers=h).json['rows']
+    for month in monthly:
+        assert round(sum(r['value'] for r in series if r['label'][:7] == month['label'][:7]), 2) == month['value']
+    map_chart = next(w for w in board['widgets'] if w['id'] == 'countries')
+    assert map_chart['kind'] == 'map'
+    assert map_chart['mapping'] == dict(region='label',value='value',scope='world')
+    countries = client.post('/api/dashboards/query', json={'query': map_chart['query']}, headers=h).json['rows']
+    assert len(countries) == 27
+    assert round(sum(r['value'] for r in countries), 2) == 1256512.5
+    created = client.post('/api/dashboards/boards', json={'definition': board}, headers=h)
+    assert created.status_code == 200
+    assert created.json['definition']['widgets'] == board['widgets']
+
+@pytest.mark.parametrize('series',['none','month','secret',[],None])
+def test_invalid_comparison_dimensions(client,series):
+    query = json.dumps(dict(metric='revenue',group='month',series=series))
+    assert client.post('/api/dashboards/query',json={'query':query},headers=headers(client)).status_code == 422
+
+def test_date_filter_applies_before_every_aggregation(client):
+    from datetime import date
+    h = headers(client)
+    period = {"from": (date(2026, 2, 8) - date(1970, 1, 1)).days,
+              "to": (date(2026, 3, 16) - date(1970, 1, 1)).days}
+    def query(q):
+        response = client.post('/api/dashboards/query', json={'query': q}, headers=h)
+        assert response.status_code == 200
+        return response.json['rows']
+    board = client.get('/api/dashboards/workspace').json['default']
+    for widget in board['widgets']:
+        q = json.loads(widget['query'])
+        assert query(json.dumps(dict(q, period=period))) != query(widget['query'])
+    detailed = query(query_spec('revenue', 'date', 'channel', period))
+    assert len(detailed) == 18
+    assert all('2026-02-08' <= r['label'] < '2026-03-16' for r in detailed)
+    total = query(query_spec('revenue', 'none', period=period))[0]['value']
+    assert round(sum(r['value'] for r in detailed), 2) == total
+    assert query(query_spec('revenue', 'none'))[0]['value'] == 1256512.5
+
+@pytest.mark.parametrize('period', [None, [], {}, {'from': 1}, {'from': 2, 'to': 1}, {'from': 1, 'to': 1}, {'from': -1, 'to': 1}, {'from': 1, 'to': 100001}, {'from': '1', 'to': 2}, {'from': True, 'to': 2}, {'from': 1.5, 'to': 2}, {'from': 1, 'to': 2, 'sql': 'select secret'}])
+def test_invalid_date_periods(client, period):
+    query = json.dumps(dict(metric='revenue', group='none', period=period))
+    assert client.post('/api/dashboards/query', json={'query': query}, headers=headers(client)).status_code == 422
+
+def test_legacy_monthly_chart_gets_complete_calendar_bucket():
+    old = chart('Monthly revenue', kind='line', group='month')
+    del old['mapping']['timeUnit']
+    loaded = DemoData().validate_chart(None, old)
+    assert loaded['mapping']['timeUnit'] == 'month'
+    assert loaded['query'] == old['query']
+    assert 'timeUnit' not in old['mapping']

@@ -806,6 +806,7 @@ export function CustomBoard({
                       x: 0,
                       y: items.reduce((n, p) => n + p.h, 0),
                       w: 12,
+                      h: visibleWidgets.find(w => w.id === l.i)?.kind === "map" ? Math.min(l.h, 6) : l.h,
                       minW: 12,
                     },
                   ],

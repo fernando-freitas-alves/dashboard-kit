@@ -1,3 +1,4 @@
+import { fieldPresentation } from "./formatting";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { barChart, donut } from "../../vendor/dash-kit/js/charts.js";
 import { table } from "../../vendor/dash-kit/js/table.js";
@@ -7,7 +8,7 @@ import { orderedSeries } from "./seriesOrder";
 
 import { activeChartVersion, previousChartVersion } from "./chartHistory";
 import { ChartTraceDialog } from "./ChartTraceDialog";
-import { D3_KINDS, escapeHtml, formatNum, num, str } from "./d3Charts";
+import { D3_KINDS, escapeHtml, num, str } from "./d3Charts";
 
 import { friendlyBoardError } from "./friendlyError";
 import { LoadingOrb } from "./LoadingOrb";
@@ -727,7 +728,7 @@ const isNumeric = (v: unknown) =>
  * aligned, numeric sort, formatted) when every non-empty value parses as a
  * number, so Trino decimals that arrive as strings still sort correctly.
  */
-function tableColumns(rows: Record<string, unknown>[]) {
+function tableColumns(rows: Record<string, unknown>[], spec: ChartSpec, runtime: DashboardRuntime) {
   return Object.keys(rows[0])
     .filter((k) => !k.startsWith("_"))
     .map((k) => {
@@ -736,15 +737,15 @@ function tableColumns(rows: Record<string, unknown>[]) {
       return numeric
         ? {
             k,
-            label: k,
+            label: fieldPresentation(runtime.options.fieldPresentation, spec, k).label,
             num: true,
             get: (r: Record<string, unknown>) =>
               r[k] == null || r[k] === "" ? null : Number(r[k]),
-            fmt: (v: number) => formatNum(v),
+            fmt: fieldPresentation(runtime.options.fieldPresentation, spec, k).format,
           }
         : {
             k,
-            label: k,
+            label: fieldPresentation(runtime.options.fieldPresentation, spec, k).label,
             get: (r: Record<string, unknown>) =>
               r[k] == null ? null : str(r[k]),
           };
@@ -779,7 +780,8 @@ function renderChart(
   if (custom) return custom(el, spec, rows);
   const { renderD3Chart, categoryColor, primaryColor } = runtime.charts;
   const m = spec.mapping;
-  if (D3_KINDS.has(spec.kind)) {
+  const timeLine = spec.kind === "line" && rows.length > 0 && rows.every(row => dayRangeFromLabel(str(row[m.x || "x"])));
+  if (D3_KINDS.has(spec.kind) && !timeLine) {
     renderD3Chart(el, spec, rows);
     return;
   }
@@ -788,8 +790,8 @@ function renderChart(
     const key = m.value || "value";
     const label = spec.title;
     const value = rows[0] ? num(rows[0][key]) : 0;
-    const text = rows[0]?.[key] == null ? "—" : formatNum(value);
-    el.innerHTML = `<div class="aie-kpi"><div class="aie-kpi-v" style="--kpi-chars:${Math.max(3, text.length)}">${text}</div><div class="aie-kpi-l">${escapeHtml(String(label))}</div></div>`;
+    const text = rows[0]?.[key] == null ? "—" : fieldPresentation(runtime.options.fieldPresentation, spec, key).format(value);
+    el.innerHTML = `<div class="aie-kpi"><div class="aie-kpi-v" style="--kpi-chars:${Math.max(3, text.length)}">${escapeHtml(text)}</div><div class="aie-kpi-l">${escapeHtml(String(label))}</div></div>`;
     return;
   }
 
@@ -800,8 +802,8 @@ function renderChart(
     }
     table(el, {
       cols:
-        runtime.options.tableColumns?.(spec, rows, tableColumns(rows)) ??
-        tableColumns(rows),
+        runtime.options.tableColumns?.(spec, rows, tableColumns(rows, spec, runtime)) ??
+        tableColumns(rows, spec, runtime),
       onDimensionClick: runtime.options.onCellAction,
       exportEnabled: runtime.options.features?.export !== false,
       rows,
@@ -828,10 +830,10 @@ function renderChart(
     donut(el, {
       items,
       sel: new Set(),
-      metric: "value",
-      // Numeric total — dash-kit formats via `int()` / interpolateNumber.
+      metric: fieldPresentation(runtime.options.fieldPresentation, spec, valueKey).label,
+      valueFmt: fieldPresentation(runtime.options.fieldPresentation, spec, valueKey).format,
+      interactive: false,
       center: items.reduce((a, b) => a + b.value, 0),
-      centerLabel: spec.title,
       onClick: () => {},
     });
     return;
@@ -857,7 +859,7 @@ function renderChart(
     seriesTotals.set(sk, (seriesTotals.get(sk) ?? 0) + Math.abs(v));
   });
 
-  const parsed = xKeys.map((key) => ({ key, range: dayRangeFromLabel(key) }));
+  const parsed = xKeys.map((key) => ({ key, range: dayRangeFromLabel(key, m.timeUnit) }));
   const isTimeSeries = parsed.length > 0 && parsed.every((p) => p.range);
   if (isTimeSeries) parsed.sort((a, b) => a.range!.from - b.range!.from);
 
@@ -934,14 +936,14 @@ function renderChart(
     buckets,
     series,
     val: valueAt,
-    stacked: seriesKey ? m.stacked !== false : false,
-    mode: spec.kind === "area" ? "area" : "bar",
+    stacked: spec.kind === "line" ? false : seriesKey ? m.stacked !== false : false,
+    mode: spec.kind === "area" ? "area" : spec.kind === "line" ? "line" : "bar",
 
-    yFmt: (v: number) => formatNum(v),
-    tipFmt: (v: number) => formatNum(v),
+    yFmt: fieldPresentation(runtime.options.fieldPresentation, spec, yKey).axisFormat,
+    tipFmt: fieldPresentation(runtime.options.fieldPresentation, spec, yKey).format,
     sel: { bucket: selBuckets, series: new Set() },
     brush: isTimeSeries,
-    bucketNoun: isTimeSeries ? "this day" : "this category",
+    bucketNoun: isTimeSeries ? "this period" : "this category",
     onBucket: isTimeSeries
       ? (b: { from: number; to: number; label: string }) => {
           applyPeriod(b.from, b.to, b.label);

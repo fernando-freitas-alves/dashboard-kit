@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { axisText, chartViewport, writeAxisLabel } from '../../../src/board/axisLayout';
 /**
- * dash-kit — the bar, stacked-bar, grouped-bar and area chart, plus the donut.
+ * dash-kit — bar, area and line timelines, plus the donut.
  *
  * One function draws all four bar variants because they share everything that
  * matters: the same stacking pass, the same hover tip, the same click-to-filter
@@ -18,7 +18,7 @@ import { esc } from "./dom.js";
 import { ANIM, EASE_OUT, EASE_IO, REDUCED, tEnter, tEnterDelay, tFilterUpdate } from "./motion.js";
 import { showTip, hideTip } from "./tooltip.js";
 import { smart, int, pct } from "./format.js";
-import { iso } from "./time.js";
+import { iso, fmtDay } from "./time.js";
 
 /** What a brushed range means. Set once per page; `o.onRange` overrides per chart. */
 let onRangeDefault = () => { };
@@ -38,13 +38,14 @@ export function configureCharts({ onRange } = {}) {
 export function brushPeriodLabel(buckets, i0, i1) {
   const lo = Math.min(i0, i1), hi = Math.max(i0, i1);
   const a = buckets[lo], b = buckets[hi];
+  if (a.from != null && b.to != null) return a.from === b.to - 1 ? fmtDay(a.from) : `${fmtDay(a.from)} – ${fmtDay(b.to - 1)}`;
   if (lo === hi) return a.label;
   const left = a.short || iso(a.from);
   const right = b.short || iso(b.to - 1);
   return `${left} – ${right}`;
 }
 
-/* o: { buckets:[{key,label,short,from,to,weekend}], series:[{key,label,color,dim?,value?,filters?}], val(bi,si), stacked, mode:'bar'|'area',
+/* o: { buckets:[{key,label,short,from,to,weekend}], series:[{key,label,color,dim?,value?,filters?}], val(bi,si), stacked, mode:'bar'|'area'|'line',
        line:{label,color,vals:[]}, target:{v,label}, yFmt, sel:{bucket:Set, series:Set}, onBucket(b,ev), onSeries(s,ev,{source}), height, hiddenKey } */
 export function barChart(el, o) {
   const animEnter = ANIM.now && ANIM.enter;
@@ -132,7 +133,7 @@ export function barChart(el, o) {
     let pos = 0, neg = 0; const top = [], bot = [];
     for (const [s, si] of vis) {
       const v = o.val(b, si) || 0;
-      if (o.stacked === false) { segs.push({ b, s, si, v, y0: 0, y1: v }); pos = Math.max(pos, v); }
+      if (o.stacked === false) { segs.push({ b, s, si, v, y0: 0, y1: v }); pos = Math.max(pos, v); neg = Math.min(neg, v); }
       else if (v >= 0) { segs.push({ b, s, si, v, y0: pos, y1: pos + v }); bot.push(pos); pos += v; top.push(pos); }
       else { segs.push({ b, s, si, v, y0: neg + v, y1: neg }); neg += v; }
       tot[b] += v;
@@ -150,7 +151,7 @@ export function barChart(el, o) {
   if (canBrush) {
     const hint = document.createElement("span");
     hint.className = "brush-hint";
-    hint.textContent = "Drag horizontally to select a date range";
+    hint.textContent = "Drag to filter dashboard";
     lg.appendChild(hint);
   }
   const viewport = chartViewport(el);
@@ -191,13 +192,12 @@ export function barChart(el, o) {
   const bkG = g.selectAll("g.bk").data(o.buckets).join("g").attr("class", (d) => "bk" + (selB.has(d.key) ? " sel" : ""));
   bkG.append("rect").attr("class", "bg").attr("x", (d, b) => x(b) - x.step() * x.paddingInner() / 2).attr("width", x.step()).attr("y", 0).attr("height", ih);
   const fade = (s, b) => { const bs = selB.size && !selB.has(o.buckets[b].key); const ss = anySel && !o.sel.series.has(s.key); return bs || ss ? 0.28 : 1; };
-  if (o.mode !== "area") {
+  if (o.mode !== "area" && o.mode !== "line") {
     const bw = o.stacked === false ? x.bandwidth() / Math.max(1, vis.length) : x.bandwidth();
     g.selectAll("rect.seg").data(segs).join("rect").attr("class", "seg")
       .attr("x", d => x(d.b) + (o.stacked === false ? bw * vis.findIndex(v => v[1] === d.si) : 0)).attr("width", Math.max(1, bw))
       // Stacked segments stay square so parts meet flush; only grouped bars get a light radius
       .attr("rx", o.stacked === false && nb <= 60 ? 2 : 0).style("fill", d => d.s.color).style("opacity", d => fade(d.s, d.b))
-      .on("pointerdown", (ev) => { ev.stopPropagation(); })
       .on("click", (ev, d) => {
         if (el.__suppressClick) { ev.stopPropagation(); return; }
         ev.stopPropagation(); hideTip();
@@ -220,27 +220,43 @@ export function barChart(el, o) {
       bars.attr("y", fy).attr("height", fh).style("opacity", targetOp);
     }
   } else {
-    // area: y0/y1 per series per bucket
+    // Area and line share the same date geometry and brush.
     const clipId = "clip" + Math.random().toString(36).slice(2);
     const cr = svg.append("defs").append("clipPath").attr("id", clipId).append("rect").attr("x", -2).attr("y", -2).attr("height", ih + 4).attr("width", animEnter ? 0 : iw + 4);
     if (animEnter) tEnter(cr).duration(900).ease(EASE_IO).attr("width", iw + 4);
     const ag = g.append("g").attr("clip-path", `url(#${clipId})`);
     for (const [s, si] of vis) {
       const pts = segs.filter(d => d.si === si).sort((a, b) => a.b - b.b);
-      const area = d3.area().x(d => x(d.b) + x.bandwidth() / 2).y0(d => y(d.y0)).y1(d => y(d.y1)).curve(d3.curveMonotoneX);
-      ag.append("path").attr("d", area(pts)).style("fill", s.color).style("opacity", anySel && !o.sel.series.has(s.key) ? 0.25 : 0.82).attr("class", "seg")
-        .on("pointerdown", (ev) => { ev.stopPropagation(); })
-        .on("click", ev => {
-          if (el.__suppressClick) { ev.stopPropagation(); return; }
-          if (s.dim && o.onSeries) o.onSeries(s, ev, { source: "mark" });
-        });
+      if (o.mode === "area") {
+        const area = d3.area().x(d => x(d.b) + x.bandwidth() / 2).y0(d => y(d.y0)).y1(d => y(d.y1)).curve(d3.curveMonotoneX);
+        let fill = s.color;
+        if (o.stacked === false) {
+          const id = `${clipId}-fill-${si}`;
+          const gradient = svg.select("defs").append("linearGradient").attr("id", id)
+            .attr("x1", 0).attr("x2", 0).attr("y1", 0).attr("y2", 1);
+          gradient.append("stop").attr("offset", "0%").attr("stop-color", s.color).attr("stop-opacity", 0.24);
+          gradient.append("stop").attr("offset", "100%").attr("stop-color", s.color).attr("stop-opacity", 0.02);
+          fill = `url(#${id})`;
+        }
+        ag.append("path").attr("d", area(pts)).attr("class", "seg area-fill")
+          .style("fill", fill).style("opacity", anySel && !o.sel.series.has(s.key) ? 0.1 : o.stacked === false ? 1 : 0.82)
+          .style("pointer-events", "none");
+      }
+      const line = d3.line().x(d => x(d.b) + x.bandwidth() / 2).y(d => y(d.y1)).curve(d3.curveMonotoneX);
+      ag.append("path").attr("d", line(pts)).attr("class", "series-line")
+        .style("fill", "none").style("stroke", s.color).style("stroke-width", 2.5)
+        .style("stroke-linecap", "round").style("stroke-linejoin", "round")
+        .style("opacity", anySel && !o.sel.series.has(s.key) ? 0.25 : 1).style("pointer-events", "none");
+      if (pts.length <= 6) ag.selectAll(`circle.series-point-${si}`).data(pts).join("circle")
+        .attr("cx", d => x(d.b) + x.bandwidth() / 2).attr("cy", d => y(d.y1)).attr("r", 3)
+        .style("fill", s.color).style("pointer-events", "none");
     }
   }
   bkG.on("click", (ev, d) => {
     if (el.__suppressClick) { ev.stopPropagation(); return; }
     hideTip(); o.onBucket && o.onBucket(d, ev);
   }).on("mousemove", (ev, d) => { if (!el.classList.contains("is-brushing")) tipFor(ev, o.buckets.indexOf(d)); }).on("mouseleave", hideTip);
-  if (o.mode === "area") bkG.raise().select(".bg").style("fill-opacity", 0.35);
+  if (o.mode === "area" || o.mode === "line") bkG.raise().select(".bg").style("fill-opacity", 0.2);
   if (yMin < 0) g.append("line").attr("x1", 0).attr("x2", iw).attr("y1", y(0)).attr("y2", y(0)).style("stroke", "var(--line-2)");
   // line
   if (o.line && !hidden.has("__line")) {
@@ -298,7 +314,7 @@ export function barChart(el, o) {
       .style("pointer-events", "all")
       .style("cursor", "pointer")
       .attr("role", "button")
-      .attr("aria-label", "Clear date range");
+      .attr("aria-label", "Clear date range").attr("tabindex", 0);
     const tagBg = brushTag.append("rect").attr("class", "brush-tag-bg").attr("rx", 5).attr("height", 18).attr("y", -22);
     const tagTxt = brushTag.append("text").attr("class", "brush-tag-label").attr("y", -9.5).attr("text-anchor", "middle")
       .attr("font-size", 10).attr("font-weight", 700).attr("font-family", "Poppins, sans-serif");
@@ -369,6 +385,9 @@ export function barChart(el, o) {
       }
     });
 
+    brushTag.on("keydown", (ev) => {
+      if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); brushTag.node().dispatchEvent(new MouseEvent("click", { bubbles: true })); }
+    });
     let brushState = null;
     const svgNode = svg.node();
     const localX = (ev) => {
@@ -380,14 +399,15 @@ export function barChart(el, o) {
     };
     const onDown = (ev) => {
       if (ev.button !== 0) return;
+      ev.stopPropagation();
       brushState = { x0: localX(ev), active: false, pointerId: ev.pointerId };
-      try { svgNode.setPointerCapture(ev.pointerId); } catch (_) { /* ignore */ }
     };
     const onMove = (ev) => {
-      if (!brushState) return;
+      if (!brushState || brushState.pointerId !== ev.pointerId) return;
       const x1 = localX(ev);
       if (!brushState.active && Math.abs(x1 - brushState.x0) >= 8) {
         brushState.active = true;
+        try { svgNode.setPointerCapture(ev.pointerId); } catch (_) { /* ignore */ }
         hideTip();
         el.classList.add("is-brushing");
         brushG.style("display", null).style("opacity", 1);
@@ -397,7 +417,7 @@ export function barChart(el, o) {
       paintBrush(bucketAt(brushState.x0), bucketAt(x1), { live: true });
     };
     const onUp = (ev) => {
-      if (!brushState) return;
+      if (!brushState || brushState.pointerId !== ev.pointerId) return;
       const was = brushState;
       brushState = null;
       el.classList.remove("is-brushing");
@@ -421,7 +441,14 @@ export function barChart(el, o) {
     svgNode.addEventListener("pointerdown", onDown);
     svgNode.addEventListener("pointermove", onMove);
     svgNode.addEventListener("pointerup", onUp);
-    svgNode.addEventListener("pointercancel", onUp);
+    svgNode.addEventListener("pointercancel", () => {
+      if (!brushState) return;
+      try { svgNode.releasePointerCapture(brushState.pointerId); } catch (_) { /* ignore */ }
+      brushState = null;
+      el.classList.remove("is-brushing");
+      if (cLo !== Infinity) paintBrush(cLo, cHi, { live: true });
+      else hideBrush();
+    });
     svgNode.style.touchAction = "none";
   }
 
@@ -431,9 +458,9 @@ export function barChart(el, o) {
     if (o.stacked !== false && o.mode !== "area" || true) rows.sort((a, c) => Math.abs(c.v) - Math.abs(a.v));
     const shown = rows.slice(0, 12);
     let h = `<div class="t">${esc(bk.label)}</div>`;
-    for (const r of shown) h += `<div class="r"${r.s.key === focus ? ' style="font-weight:700"' : ""}><i style="background:${r.s.color}"></i><span>${esc(r.s.label)}</span><b>${(o.tipFmt || o.yFmt || smart)(r.v)}</b></div>`;
+    for (const r of shown) h += `<div class="r"${r.s.key === focus ? ' style="font-weight:700"' : ""}><i style="background:${r.s.color}"></i><span>${esc(r.s.label)}</span><b>${esc((o.tipFmt || o.yFmt || smart)(r.v))}</b></div>`;
     if (rows.length > 12) h += `<div class="h">+ ${rows.length - 12} more</div>`;
-    if (rows.length > 1 && o.stacked !== false && o.showTotal !== false) h += `<div class="r" style="border-top:1px solid var(--tip-line);margin-top:3px;padding-top:3px"><span>Total</span><b>${(o.tipFmt || o.yFmt || smart)(tot[b])}</b></div>`;
+    if (rows.length > 1 && o.stacked !== false && o.showTotal !== false) h += `<div class="r" style="border-top:1px solid var(--tip-line);margin-top:3px;padding-top:3px"><span>Total</span><b>${esc((o.tipFmt || o.yFmt || smart)(tot[b]))}</b></div>`;
     if (o.line && o.line.vals[b] != null) h += `<div class="r"><i style="background:${o.line.color}"></i><span>${esc(o.line.label)}</span><b>${smart(o.line.vals[b])}</b></div>`;
     if (o.extraTip) h += o.extraTip(b);
     const brushNote = (o.brush !== false && o.buckets[0]?.from != null) ? " · Drag: select a date range" : "";
@@ -466,9 +493,9 @@ export function donut(el, o) {
   const arc = d3.arc().innerRadius(R0 * 0.56).outerRadius(R0).cornerRadius(2).padAngle(0.012);
   const arcH = d3.arc().innerRadius(R0 * 0.56).outerRadius(R0 + hoverGrow).cornerRadius(2).padAngle(0.012);
   const slices = g.selectAll("path").data(arcs).join("path").attr("class", "pie-slice").style("fill", d => d.data.color)
-    .style("opacity", d => sel.size && !sel.has(d.data.key) ? 0.3 : 1).style("cursor", "pointer")
+    .style("opacity", d => sel.size && !sel.has(d.data.key) ? 0.3 : 1).style("cursor", o.interactive === false ? "default" : "pointer")
     .on("click", (ev, d) => { hideTip(); o.onClick(d.data, ev, { source: "mark" }); })
-    .on("mousemove", (ev, d) => showTip(ev, `<div class="t">${esc(d.data.label)}</div><div class="r"><span>${esc(o.metric)}</span><b>${int(d.data.value)}</b></div><div class="r"><span>Share</span><b>${pct(d.data.value / total)}</b></div><div class="h">Click to filter the dashboard</div>`))
+    .on("mousemove", (ev, d) => showTip(ev, `<div class="t">${esc(d.data.label)}</div><div class="r"><span>${esc(o.metric)}</span><b>${esc((o.valueFmt || int)(d.data.value))}</b></div><div class="r"><span>Share</span><b>${pct(d.data.value / total)}</b></div>${o.interactive === false ? "" : '<div class="h">Click to filter the dashboard</div>'}`))
     .on("mouseenter", function (ev, d) {
       if (REDUCED) return;
       d3.select(this).interrupt().transition().duration(160).ease(EASE_OUT).attr("d", arcH(d));
@@ -499,22 +526,33 @@ export function donut(el, o) {
     .style("fill", "#fff").style("font-weight", 600).style("font-size", `${Math.max(9, Math.min(12, R0 * 0.12))}px`)
     .style("pointer-events", "none").text(d => pct(d.data.value / total));
   const cv = o.center ?? total;
+  const centerText = (o.valueFmt || int)(cv);
   const centerPx = Math.max(11, Math.min(20, R0 * 0.24));
-  const labelPx = Math.max(9, Math.min(12, R0 * 0.12));
-  const ct = g.append("text").attr("text-anchor", "middle").attr("dy", "-0.15em")
-    .style("font-size", `${centerPx}px`).style("font-weight", 700).style("fill", "var(--text)").text(int(cv));
-  if (animEnter) ct.transition().duration(900).ease(EASE_OUT).tween("text", function () { const it = d3.interpolateNumber(0, cv); return t => { this.textContent = int(Math.round(it(t))); }; });
-  let centerLabel = o.centerLabel || "total";
-  // Approx char budget for the hole (inner radius ≈ 0.56 R0).
-  const maxChars = Math.max(6, Math.floor((R0 * 0.9) / (labelPx * 0.55)));
-  if (centerLabel.length > maxChars) centerLabel = centerLabel.slice(0, Math.max(4, maxChars - 1)) + "…";
-  g.append("text").attr("text-anchor", "middle").attr("dy", "1.35em")
-    .style("font-size", `${labelPx}px`).style("fill", "var(--muted, var(--text-2))")
-    .text(centerLabel);
+  const innerRadius = R0 * 0.56;
+  const gap = Math.max(4, Math.min(12, innerRadius * 0.16));
+  const ct = g.append("text").attr("class", "donut-value").attr("text-anchor", "middle")
+    .attr("dominant-baseline", "central").attr("aria-label", `Total: ${centerText}`)
+    .style("font-size", `${centerPx}px`).style("font-weight", 700)
+    .style("font-variant-numeric", "tabular-nums").style("fill", "var(--text)").text(centerText);
+  const node = ct.node();
+  const bounds = node.getBBox?.();
+  const width = bounds?.width || centerText.length * centerPx * 0.65;
+  const height = bounds?.height || centerPx;
+  // Fit the whole text box inside the hole, with space around its corners too.
+  const scale = Math.min(1, 2 * (innerRadius - gap) / Math.hypot(width, height));
+  ct.style("font-size", `${centerPx * scale}px`);
+  if (bounds?.width) {
+    ct.attr("x", -(bounds.x + bounds.width / 2) * scale)
+      .attr("y", -(bounds.y + bounds.height / 2) * scale);
+  }
+  if (animEnter) ct.transition().duration(900).ease(EASE_OUT).tween("text", function () {
+    const it = d3.interpolateNumber(0, cv);
+    return t => { this.textContent = t === 1 ? centerText : (o.valueFmt || int)(it(t)); };
+  });
   const lgNode = wrap.append("div").attr("class", "donut-legend").node();
   items.slice().sort((a, b) => b.value - a.value).forEach((d, i) => {
     const row = document.createElement("div");
-    row.className = "lg filterable" + (sel.size && !sel.has(d.key) ? " dim" : "");
+    row.className = (o.interactive === false ? "lg" : "lg filterable") + (sel.size && !sel.has(d.key) ? " dim" : "");
     const swatch = document.createElement("i");
     swatch.className = "lg-swatch";
     swatch.style.background = d.color;
@@ -524,10 +562,11 @@ export function donut(el, o) {
     label.className = "lg-label";
     label.textContent = d.label;
     const count = document.createElement("b");
-    count.textContent = int(d.value);
+    count.textContent = (o.valueFmt || int)(d.value);
     row.append(swatch, label, count);
 
     const bindBtn = (node, title, ariaLabel, target) => {
+      if (o.interactive === false) return;
       node.setAttribute("role", "button");
       node.tabIndex = 0;
       node.title = title;
