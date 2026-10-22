@@ -5,6 +5,7 @@ import { table } from "../../vendor/dash-kit/js/table.js";
 import { hideTip, showTip } from "../../vendor/dash-kit/js/tooltip.js";
 import { isAbortError } from "./abort";
 import { orderedSeries } from "./seriesOrder";
+import { fileSlug } from "./chartText";
 
 import { activeChartVersion, previousChartVersion } from "./chartHistory";
 import { ChartTraceDialog } from "./ChartTraceDialog";
@@ -751,14 +752,6 @@ function tableColumns(rows: Record<string, unknown>[], spec: ChartSpec, runtime:
           };
     });
 }
-
-/** Lowercase snake-case name for the CSV download. */
-const fileSlug = (title: string) =>
-  title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "")
-    .slice(0, 60);
 
 /**
  * Draw `rows` as `spec.kind`. Bar/area go through dash-kit's bar chart (dates

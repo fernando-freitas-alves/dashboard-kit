@@ -4,6 +4,7 @@ import { type BoardPeriod } from "./period";
 import { useDashboard } from "../runtime";
 import { activeChartVersion, chartVersions } from "./chartHistory";
 import { useQdlg } from "./useQdlg";
+import { sqlTokens } from "./chartText";
 import type { ChartSpec, ChartTrace, ChartTraceStep } from "./types";
 
 type Props = {
@@ -366,20 +367,15 @@ const definition_KEYWORDS = new Set(
 /** Token-level definition colouring as React nodes (no innerHTML, so model definition can't inject markup). */
 function highlightSql(query: string): ReactNode[] {
   const out: ReactNode[] = [];
-  const re =
-    /(--[^\n]*|\/\*[\s\S]*?\*\/)|('(?:[^']|'')*')|\b(\d+(?:\.\d+)?)\b|([A-Za-z_][A-Za-z0-9_]*)/g;
-  let last = 0;
   let key = 0;
-  for (let m = re.exec(query); m; m = re.exec(query)) {
-    if (m.index > last) out.push(query.slice(last, m.index));
-    const [tok, comment, str, num, word] = m;
-    const cls = comment
+  for (const { text: tok, kind } of sqlTokens(query)) {
+    const cls = kind === "comment"
       ? "cm"
-      : str
+      : kind === "string"
         ? "str"
-        : num
+        : kind === "number"
           ? "num"
-          : word && definition_KEYWORDS.has(word.toUpperCase())
+          : kind === "word" && definition_KEYWORDS.has(tok.toUpperCase())
             ? "kw"
             : null;
     out.push(
@@ -391,8 +387,6 @@ function highlightSql(query: string): ReactNode[] {
         tok
       ),
     );
-    last = re.lastIndex;
   }
-  if (last < query.length) out.push(query.slice(last));
   return out;
 }
