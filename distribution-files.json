@@ -20,6 +20,7 @@
   "frontend/dist/types/src/board/agent/recipes.d.ts",
   "frontend/dist/types/src/board/axisLayout.d.ts",
   "frontend/dist/types/src/board/chartHistory.d.ts",
+  "frontend/dist/types/src/board/chartText.d.ts",
   "frontend/dist/types/src/board/d3Charts.d.ts",
   "frontend/dist/types/src/board/formatting.d.ts",
   "frontend/dist/types/src/board/friendlyError.d.ts",
